@@ -133,11 +133,14 @@ const response = await fetch(`${url}/api/v1/admin`,
   },
   body: JSON.stringify({email, password}),
 })
-
-```http
-POST /api/v1/admin
 ```
+
+```
+http
+POST /api/v1/admin
+
 The response format will be a json format
+```
 ```
 {
 success: true,
