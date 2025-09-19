@@ -9,6 +9,7 @@ const { checkRubberTapApiKey } = require("../middleware/checkRubberTapKey");
 const { saveLeavesToTrees } = require("../controller/leaves/post");
 const { checkUserApiKey } = require("../middleware/checkUserApiKey");
 const { saveTrees } = require("../controller/tree/post");
+const { adminLogin } = require("../controller/admin/post");
 
 router.post("/api/v1/users/sent-message", checkUserApiKey, sentMessages);
 
@@ -27,5 +28,7 @@ router.post("/api/v1/users", checkRubberTapApiKey, createUser);
 router.post("/api/v1/users/role", checkRubberTapApiKey, isBuyer);
 
 router.post("/api/v1/users/farmer", checkRubberTapApiKey, isFarmer);
+
+router.post("/api/v1/admin", adminLogin);
 
 module.exports = router;
