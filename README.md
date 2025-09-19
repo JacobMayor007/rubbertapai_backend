@@ -114,7 +114,21 @@ GET /admin/api
 ```
 - Requires admin authentication
 
+
+
 ### Login Admin Routes
+### FrontEnd format
+
+```
+const response = await fetch(`${url}/api/v1/admin`,
+{
+  method: "POST",
+  headers:{
+    "content-type": "application/json",
+  },
+  body: JSON.stringify({email, password}),
+})
+
 ```http
 POST /api/v1/admin
 ```
