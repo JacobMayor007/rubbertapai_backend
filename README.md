@@ -1,8 +1,13 @@
 # Rubbertapai Server API Documentation
 
-## Base URL
+## Base URL Localhost
 ```
-http://localhost:3000
+[http://localhost:3000]
+```
+
+### BASE URL Live Deployment
+```
+  https://rubbertapai-*********.***.****/api/****/admin
 ```
 
 ## Authentication
