@@ -13,13 +13,10 @@ module.exports.adminLogin = async (req, res) => {
 
     const session = await account.createEmailPasswordSession(email, password);
 
-    const jwt = await account.createJWT();
-
     return res.status(200).json({
       success: true,
       message: "Admin logged in successfully",
       data: {
-        token: jwt.jwt,
         sessionId: session.$id,
         userId: session.userId,
       },
