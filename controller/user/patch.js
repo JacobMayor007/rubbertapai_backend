@@ -155,12 +155,12 @@ module.exports.upsertPushTokenUser = async (req, res) => {
         pushToken: token,
       }
     );
-
-    return res.status(200).json({
-      success: true,
-      status: "ok",
-      response,
-    });
+    if (response) {
+      return res.status(200).json({
+        success: true,
+        status: "ok",
+      });
+    }
   } catch (error) {
     console.error(error);
 
