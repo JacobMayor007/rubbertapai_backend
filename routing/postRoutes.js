@@ -4,7 +4,12 @@ const { sentMessages } = require("../controller/messages/post");
 const { savePlot } = require("../controller/plot/post");
 const { addProduct } = require("../controller/product/post");
 const { postReport } = require("../controller/report/post");
-const { createUser, isBuyer, isFarmer } = require("../controller/user/post");
+const {
+  createUser,
+  isBuyer,
+  isFarmer,
+  postNotification,
+} = require("../controller/user/post");
 const { checkRubberTapApiKey } = require("../middleware/checkRubberTapKey");
 const { saveLeavesToTrees } = require("../controller/leaves/post");
 const { checkUserApiKey } = require("../middleware/checkUserApiKey");
@@ -28,6 +33,12 @@ router.post("/api/v1/users", checkRubberTapApiKey, createUser);
 router.post("/api/v1/users/role", checkRubberTapApiKey, isBuyer);
 
 router.post("/api/v1/users/farmer", checkRubberTapApiKey, isFarmer);
+
+router.post(
+  "/api/v1/users/weather-notification",
+  checkUserApiKey,
+  postNotification
+);
 
 router.post("/api/v1/admin", adminLogin);
 

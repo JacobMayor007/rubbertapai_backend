@@ -2,6 +2,9 @@ const { Query } = require("node-appwrite");
 const { database } = require("../../lib/appwrite");
 const bcrypt = require("bcrypt");
 const saltRounds = 15;
+const { Expo } = require("expo-server-sdk");
+
+let expo = new Expo();
 
 module.exports.createUser = async (req, res) => {
   try {
@@ -212,5 +215,31 @@ module.exports.isFarmer = async (req, res) => {
       details:
         process.env.NODE_ENV === "development" ? error.message : undefined,
     });
+  }
+};
+
+module.exports.postNotification = async (req, res) => {
+  let { token, title, body } = req.body;
+
+  if (!Expo.isExpoPushToken(token)) {
+    return res.status(400).send("Invalid Expo push token.");
+  }
+
+  let messages = [
+    {
+      to: token,
+      sound: "default",
+      title: title,
+      body: body,
+    },
+  ];
+
+  try {
+    let ticketChunk = await expo.sendPushNotificationsAsync(messages);
+    console.log(ticketChunk);
+    res.status(200).send({ success: true, tickets: ticketChunk });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ success: false, error: error.message });
   }
 };
