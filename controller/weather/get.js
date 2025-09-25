@@ -19,6 +19,7 @@ module.exports.getCurrentWeather = async (req, res) => {
     }
 
     const data = await response.json();
+
     return res.status(200).json(data);
   } catch (error) {
     console.error("Error fetching user:", error);

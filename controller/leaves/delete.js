@@ -1,8 +1,8 @@
 const { database } = require("../../lib/appwrite");
 
-module.exports.deleteTree = async (req, res) => {
+module.exports.deleteLeaf = async (req, res) => {
   try {
-    const { leaf_id } = req.params;
+    const { leaf_id } = req.body;
     if (!leaf_id) {
       return res.status(400).json({
         status: "Error",
