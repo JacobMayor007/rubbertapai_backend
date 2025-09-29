@@ -13,12 +13,12 @@ module.exports.sentMessages = async (req, res) => {
       [
         Query.or([
           Query.and([
-            Query.equal("senderId", req.body.sender_id),
+            Query.equal("senderId", req.body.userId),
             Query.equal("receiverId", req.body.receiver_id),
           ]),
           Query.and([
             Query.equal("senderId", req.body.receiver_id),
-            Query.equal("receiverId", req.body.sender_id),
+            Query.equal("receiverId", req.body.userId),
           ]),
         ]),
       ]
@@ -32,14 +32,14 @@ module.exports.sentMessages = async (req, res) => {
         `${process.env.APPWRITE_CHAT_COLLECTION_ID}`,
         ID.unique(),
         {
-          participants: [data.sender_id, data.receiver_id],
+          participants: [data.userId, data.receiver_id],
           participants_profile: [data.senderProfile, data.receiverProfile],
           participants_username: [data.senderName, data.receiverName],
           lastMessage: data.lastMessage,
-          senderId: data.sender_id,
+          senderId: data.userId,
           receiverId: data.receiver_id,
         },
-        [`write("user:${data.sender_id}")`]
+        [`write("user:${data.userId}")`]
       );
     } else {
       await database.updateDocument(
@@ -48,10 +48,10 @@ module.exports.sentMessages = async (req, res) => {
         chatRoomID,
         {
           lastMessage: data.lastMessage,
-          senderId: data.sender_id,
+          senderId: data.userId,
           receiverId: data.receiver_id,
         },
-        [`write("user:${data.sender_id}")`]
+        [`write("user:${data.userId}")`]
       );
     }
 
@@ -62,11 +62,11 @@ module.exports.sentMessages = async (req, res) => {
       {
         product_id: "",
         content: data.lastMessage,
-        sender_id: data.sender_id,
+        sender_id: data.userId,
         receiver_id: data.receiver_id,
         imageUrl: data?.fileUrl || "",
       },
-      [`write("user:${data.sender_id}")`]
+      [`write("user:${data.userId}")`]
     );
 
     return res.status(200);

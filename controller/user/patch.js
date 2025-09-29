@@ -161,6 +161,7 @@ module.exports.upsertPushTokenUser = async (req, res) => {
         status: "ok",
       });
     }
+    
   } catch (error) {
     console.error(error);
 

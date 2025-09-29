@@ -20,3 +20,4 @@ router.patch("/api/v1/users/name", checkUserApiKey, changeName);
 router.patch("/api/v1/users/push-token", checkUserApiKey, upsertPushTokenUser);
 
 module.exports = router;
+
