@@ -161,7 +161,68 @@ module.exports.upsertPushTokenUser = async (req, res) => {
         status: "ok",
       });
     }
-    
+  } catch (error) {
+    console.error(error);
+
+    if (error.code === 404) {
+      return res.status(404).json({
+        success: false,
+        error: "User collection not found, failed to register token",
+      });
+    }
+
+    if (error.code === 400) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid query parameters",
+        details: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+module.exports.updateCity = async (req, res) => {
+  try {
+    const { userId, city } = req.body;
+
+    if (!userId) {
+      return res.status(404).json({
+        success: false,
+        title: "Unauthorized",
+        message: "You are unauthorized to have this request!",
+      });
+    }
+
+    if (!city) {
+      return res.status(404).json({
+        success: false,
+        title: "City Not Found",
+        message: "There are no City",
+      });
+    }
+
+    const response = await database.updateDocument(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_USER_COLLECTION_ID}`,
+      userId,
+      {
+        city: city,
+      }
+    );
+
+    if (response) {
+      return res.status(200).json({
+        success: true,
+        status: "ok",
+      });
+    }
   } catch (error) {
     console.error(error);
 
