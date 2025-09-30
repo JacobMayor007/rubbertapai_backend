@@ -14,6 +14,20 @@ module.exports.RateFeedbackUser = async (req, res) => {
       });
     }
 
+    const ratedAlready = await database.listDocuments(
+      process.env.APPWRITE_DATABASE_ID,
+      process.env.APPWRITE_RATE_FEED_COLLECTION_ID,
+      [Query.equal("rated", receivedId), Query.equal("ratedBy", userId)]
+    );
+
+    if (ratedAlready) {
+      return res.status(404).json({
+        success: false,
+        title: "Already rated",
+        message: "You have already rated this user.",
+      });
+    }
+
     const result = await database.createDocument(
       `${process.env.APPWRITE_DATABASE_ID}`,
       `${process.env.APPWRITE_RATE_FEED_COLLECTION_ID}`,
@@ -48,8 +62,8 @@ module.exports.RateFeedbackUser = async (req, res) => {
         averageRate.documents.length;
 
       await database.updateDocument(
-        process.env.APPWRITE_DATABASE_ID,
-        process.env.APPWRITE_USER_COLLECTION_ID,
+        `${process.env.APPWRITE_DATABASE_ID}`,
+        `${process.env.APPWRITE_USER_COLLECTION_ID}`,
         receivedId,
         { rate: average }
       );
