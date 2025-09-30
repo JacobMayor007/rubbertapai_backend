@@ -4,6 +4,7 @@ const { database, ID } = require("../../lib/appwrite");
 module.exports.RateFeedbackUser = async (req, res) => {
   try {
     const { userId, receivedId, rate, feedback } = req.body;
+    console.log(req.body);
 
     if (feedback.length > 1549) {
       return res.status(406).json({
@@ -14,14 +15,14 @@ module.exports.RateFeedbackUser = async (req, res) => {
       });
     }
 
-    const ratedAlready = await database.listDocuments(
+    const duplicateCheck = await database.listDocuments(
       process.env.APPWRITE_DATABASE_ID,
       process.env.APPWRITE_RATE_FEED_COLLECTION_ID,
       [Query.equal("rated", receivedId), Query.equal("ratedBy", userId)]
     );
 
-    if (ratedAlready) {
-      return res.status(404).json({
+    if (duplicateCheck.documents.length > 0) {
+      return res.status(400).json({
         success: false,
         title: "Already rated",
         message: "You have already rated this user.",
@@ -36,7 +37,7 @@ module.exports.RateFeedbackUser = async (req, res) => {
         ratedBy: userId,
         rated: receivedId,
         rate: Number(rate),
-        feedback,
+        feedback: feedback || "",
       }
     );
 
