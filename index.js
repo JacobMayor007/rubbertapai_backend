@@ -42,12 +42,15 @@ const checkWeatherAndNotify = async (checkUserWeather) => {
   const data = await response.json();
   const forecastDays = data.forecast.forecastday;
   const token = checkUserWeather.pushToken;
-
-  console.log(JSON.stringify(forecastDays[0].hour[dayjs().hour()], null, 2));
+  const time = dayjs().hour() + 1;
+  console.log(JSON.stringify(forecastDays[0].hour[time], null, 2));
   console.log(checkUserWeather.pushToken);
-  console.log(forecastDays[0].hour[dayjs().hour()].chance_of_rain);
+  console.log(forecastDays[0].hour[time].chance_of_rain);
 
-  if (forecastDays[0].hour[dayjs().hour()].will_it_rain === 1) {
+  console.log("Time: ", time);
+  console.log(`${dayjs().hour(time).format("hh:00 A")}`);
+
+  if (forecastDays[0].hour[time].will_it_rain === 1) {
     if (!Expo.isExpoPushToken(token)) {
       return res.status(400).send("Invalid Expo push token.");
     }
@@ -57,7 +60,9 @@ const checkWeatherAndNotify = async (checkUserWeather) => {
         to: token,
         sound: "default",
         title: "Rain Warning Alert",
-        body: `The chance of rain today is ${
+        body: `The chance of rain at ${dayjs()
+          .hour(time)
+          .format("hh:00 A")} is ${
           forecastDays[0].hour[dayjs().hour()].chance_of_rain
         }%`,
       },
@@ -67,8 +72,8 @@ const checkWeatherAndNotify = async (checkUserWeather) => {
   }
 };
 
-setInterval(getUsersLocation, 30 * 60 * 1000);
-
+setInterval(getUsersLocation, 5000);
+//30 * 60 *
 app.listen(port, () => {
   console.log(`Listening on PORT ${port}`);
 });
