@@ -218,6 +218,67 @@ module.exports.isFarmer = async (req, res) => {
   }
 };
 
+module.exports.isAdmin = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    console.log(req.body);
+
+    const isAdmin = await database.listDocuments(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_USER_COLLECTION_ID}`,
+      [Query.equal("email", email)]
+    );
+
+    const role = isAdmin.documents[0].role;
+
+    console.log(role);
+
+    if (role !== "admin") {
+      return res.status(401).json({
+        success: false,
+        message:
+          "Your account is not registered to this application. Make sure to register as an admin.",
+        title: "Account Unauthorized!",
+        role,
+      });
+    }
+
+    next();
+  } catch (error) {
+    console.error("Error fetching user:", error);
+
+    // Handle specific Appwrite errors
+    if (error.code === 404) {
+      return res.status(404).json({
+        success: false,
+        error: "User Document not found",
+      });
+    }
+
+    if (error.code === 401) {
+      return res.status(401).json({
+        message: "Unathorized user to query this tree",
+      });
+    }
+
+    if (error.code === 400) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid query parameters",
+        details: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports.postNotification = async (req, res) => {
   let { token, title, body } = req.body;
 

@@ -9,6 +9,7 @@ const {
   isBuyer,
   isFarmer,
   postNotification,
+  isAdmin,
 } = require("../controller/user/post");
 const { checkRubberTapApiKey } = require("../middleware/checkRubberTapKey");
 const { saveLeavesToTrees } = require("../controller/leaves/post");
@@ -61,7 +62,7 @@ router.post("/api/v1/users/role", checkRubberTapApiKey, isBuyer);
 router.post("/api/v1/users/farmer", checkRubberTapApiKey, isFarmer);
 
 //Admin Login
-router.post("/api/v1/admin", adminLogin);
+router.post("/api/v1/admin", isAdmin, adminLogin);
 
 {
   /* Notifications */
@@ -79,6 +80,5 @@ router.post(
 
 //Rate User
 router.post("/api/v1/users/rate", checkUserApiKey, RateFeedbackUser);
-
 
 module.exports = router;

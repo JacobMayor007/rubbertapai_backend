@@ -4,6 +4,7 @@ const routes = require("./routing/index");
 const { database } = require("./lib/appwrite");
 const dayjs = require("dayjs");
 const { Expo } = require("expo-server-sdk");
+const cors = require("cors");
 
 let expo = new Expo();
 
@@ -11,6 +12,7 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(express.json());
+app.use(cors());
 app.use("/", routes);
 
 const getUsersLocation = async () => {
