@@ -42,17 +42,41 @@ const checkWeatherAndNotify = async (checkUserWeather) => {
   const data = await response.json();
   const forecastDays = data.forecast.forecastday;
   const token = checkUserWeather.pushToken;
-  const time = dayjs().hour() + 1;
-  console.log(JSON.stringify(forecastDays[0].hour[time], null, 2));
-  console.log(checkUserWeather.pushToken);
-  console.log(forecastDays[0].hour[time].chance_of_rain);
 
-  console.log("Time: ", time);
-  console.log(`${dayjs().hour(time).format("hh:00 A")}`);
+  // Fix time calculation - use 0-23 range
+  let currentHour = dayjs().hour();
+  let targetHour = currentHour + 1;
+  let dayIndex = 0;
 
-  if (forecastDays[0].hour[time].will_it_rain === 1) {
+  // If target hour is 24, it means we're looking at the first hour of the next day
+  if (targetHour >= 24) {
+    targetHour = 0;
+    dayIndex = 1;
+  }
+
+  console.log("Target hour:", targetHour);
+  console.log("Day index:", dayIndex);
+
+  // Check if we have enough forecast data
+  if (!forecastDays[dayIndex] || !forecastDays[dayIndex].hour[targetHour]) {
+    console.log(
+      `No forecast data available for hour ${targetHour} on day ${dayIndex}`
+    );
+    return;
+  }
+
+  const targetHourData = forecastDays[dayIndex].hour[targetHour];
+  console.log(JSON.stringify(targetHourData, null, 2));
+  console.log("Push token:", checkUserWeather.pushToken);
+  console.log("Target hour data:", targetHourData);
+
+  console.log("Time: ", targetHour);
+  console.log(`${dayjs().hour(targetHour).format("hh:00 A")}`);
+
+  if (targetHourData.will_it_rain === 1) {
     if (!Expo.isExpoPushToken(token)) {
-      return res.status(400).send("Invalid Expo push token.");
+      console.error("Invalid Expo push token:", token);
+      return;
     }
 
     let messages = [
@@ -61,19 +85,22 @@ const checkWeatherAndNotify = async (checkUserWeather) => {
         sound: "default",
         title: "Rain Warning Alert",
         body: `The chance of rain at ${dayjs()
-          .hour(time)
-          .format("hh:00 A")} is ${
-          forecastDays[0].hour[dayjs().hour()].chance_of_rain
-        }%`,
+          .hour(targetHour)
+          .format("hh:00 A")} is ${targetHourData.chance_of_rain}%`,
       },
     ];
-    let ticketChunk = await expo.sendPushNotificationsAsync(messages);
-    console.log(ticketChunk);
+
+    try {
+      let ticketChunk = await expo.sendPushNotificationsAsync(messages);
+      console.log("Notification sent:", ticketChunk);
+    } catch (error) {
+      console.error("Error sending notification:", error);
+    }
   }
 };
 
-setInterval(getUsersLocation, 5000);
-//30 * 60 *
+setInterval(getUsersLocation, 30 * 60 * 1000);
+
 app.listen(port, () => {
   console.log(`Listening on PORT ${port}`);
 });
