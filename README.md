@@ -130,9 +130,37 @@ DATA:
   
 ```
 
+### GET All Users 
+```
+  NEEDED IN SERVER SIDE
+  HEADERS:
+    "Content-Type" : "application/json"
+    "Accept" : "application/json"
+  BODY:
+    {
+      role,
+      username,
+      notifSettings ,
+      themeSettings ,
+      subscription ,
+      imageURL ,
+      email,
+      fName ,
+      lName ,
+      fullName ,
+      city,
+      rate,
+      $id,
+      $createdAt",
+      $updatedAt" ,
+    }
+
+```
+
 ### User Management
 #### Get User by ID
-```http
+```
+http
 GET /api/v1/users/user/:id
 ```
 - Parameters:
