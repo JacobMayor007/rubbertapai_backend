@@ -19,6 +19,7 @@ const {
   adminLogin,
   getRatesAndFeedbacks,
   getAllUsers,
+  getUserReportUsingId,
 } = require("../controller/admin/post");
 const { RateFeedbackUser } = require("../controller/rateAndFeedback/post");
 
@@ -101,5 +102,12 @@ router.post(
 );
 
 router.post("/api/v1/admin/users", checkUserApiKey, isAdmin, getAllUsers);
+
+router.post(
+  "/api/v1/admin/user",
+  checkUserApiKey,
+  isAdmin,
+  getUserReportUsingId
+);
 
 module.exports = router;
