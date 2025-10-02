@@ -9,6 +9,8 @@ const {
   upsertPushTokenUser,
   updateCity,
 } = require("../controller/user/patch");
+const { isAdmin } = require("../controller/user/post");
+const { endisable } = require("../controller/admin/patch");
 
 {
   /* Plots */
@@ -38,5 +40,12 @@ router.patch("/api/v1/users/push-token", checkUserApiKey, upsertPushTokenUser);
 
 //City Update
 router.patch("/api/v1/users/city", checkUserApiKey, updateCity);
+
+{
+  /* Admin */
+}
+
+//User Enable/Disable
+router.patch("/api/v1/admin/user", checkUserApiKey, isAdmin, endisable);
 
 module.exports = router;

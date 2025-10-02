@@ -86,37 +86,67 @@ module.exports.createUser = async (req, res) => {
 
 module.exports.isBuyer = async (req, res) => {
   try {
+    // Validate request body
+    if (!req.body || typeof req.body !== "object") {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid request body",
+      });
+    }
+
     const { email } = req.body;
 
-    console.log(req.body);
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: "Email is required",
+      });
+    }
+
+    console.log("Request body:", req.body);
 
     const isBuyer = await database.listDocuments(
-      `${process.env.APPWRITE_DATABASE_ID}`,
-      `${process.env.APPWRITE_USER_COLLECTION_ID}`,
+      process.env.APPWRITE_DATABASE_ID,
+      process.env.APPWRITE_USER_COLLECTION_ID,
       [Query.equal("email", email)]
     );
 
-    const role = isBuyer.documents[0].role;
+    if (!isBuyer.documents || isBuyer.documents.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+      });
+    }
 
-    console.log(role);
+    const user = isBuyer.documents[0];
+    const role = user.role;
+    const status = user.status;
 
-    if (role !== "buyer") {
+    if (status === "disable") {
       return res.status(401).json({
-        success: true,
-        message:
-          "Your account is not registered to this application. Make sure to register as a buyer.",
-        title: "Account Unauthorized!",
+        success: false,
+        message: "Your account is disabled. Please contact support.",
+        title: "Account Disabled",
         role,
       });
     }
 
-    if (role === "buyer") {
-      return res.status(200).json({
-        title: "Found",
-        success: true,
-        role: "buyer",
+    console.log("User role:", role);
+
+    if (role !== "buyer") {
+      return res.status(403).json({
+        success: false,
+        message: "Your account is not registered as a buyer.",
+        title: "Access Denied",
+        role,
       });
     }
+
+    return res.status(200).json({
+      title: "Success",
+      success: true,
+      role: "buyer",
+    });
   } catch (error) {
     console.error("Error fetching user:", error);
 
@@ -124,21 +154,21 @@ module.exports.isBuyer = async (req, res) => {
     if (error.code === 404) {
       return res.status(404).json({
         success: false,
-        error: "User Document not found",
+        error: "User not found",
       });
     }
 
     if (error.code === 401) {
       return res.status(401).json({
-        message: "Unathorized user to query this tree",
+        success: false,
+        error: "Unauthorized access",
       });
     }
 
     if (error.code === 400) {
       return res.status(400).json({
         success: false,
-        error: "Invalid query parameters",
-        details: error.message,
+        error: "Invalid request parameters",
       });
     }
 
@@ -164,26 +194,34 @@ module.exports.isFarmer = async (req, res) => {
     );
 
     const role = isBuyer.documents[0].role;
+    const status = isBuyer.documents[0].status;
 
-    console.log(role);
+    console.log(status);
 
-    if (role !== "buyer") {
+    if (status === "disable") {
+      return res.status(401).json({
+        success: false,
+        message: "Your account is disabled. Please contact support.",
+        title: "Account Disabled",
+        role,
+      });
+    }
+
+    if (role === "buyer") {
       return res.status(401).json({
         success: true,
         message:
-          "Your account is not registered to this application. Make sure to register as a buyer.",
+          "Your account is not registered to this application. Make sure to register as a farmer.",
         title: "Account Unauthorized!",
         role,
       });
     }
 
-    if (role === "farmer") {
-      return res.status(200).json({
-        title: "Found",
-        success: true,
-        role: "buyer",
-      });
-    }
+    return res.status(200).json({
+      title: "Found",
+      success: true,
+      role: "farmer",
+    });
   } catch (error) {
     console.error("Error fetching user:", error);
 

@@ -49,12 +49,12 @@ The response format will be a json format
 
 ```
 {
-success: true,
-      message: "Admin logged in successfully",
-      data: {
-        sessionId: session.$id,
-        userId: session.userId,
-      },
+  success: true,
+  message: string,
+  data: {
+    sessionId: string,
+    userId: string,
+  },
 }
 ```
 
@@ -93,22 +93,22 @@ HEADERS:
   Accept : application/json
 BODY:
   {
-    userId
-    email
-    API_KEY
+    userId,  ---> user id of the admin
+    API_KEY, ---> API_KEY of the admin
+    email: ---> email of the admin
   }
 
 DATA:
   {
-    status,
-    reported_id"
-    reportedBy"
-    type"
-    description
-    ResolvedAt
-    $id
-    $createdAt
-    $updatedAt
+    status:string,
+    reported_id:string,
+    reportedBy:string,
+    type:string,
+    description:string,
+    ResolvedAt,
+    $id:string,
+    $createdAt:string,
+    $updatedAt:string,
   }
 
 ```
@@ -122,24 +122,24 @@ DATA:
     Accept : application/json
   BODY:
   {
-    userId
-    email
-    API_KEY
-    reportedId
+    userId,  ---> user id of the admin
+    API_KEY, ---> API_KEY of the admin
+    reportedId, ---> id of the farmer | buyer
+    email: ---> email of the admin
   }
 
   POST ${BASE_URL}/api/v1/admin/user
   DATA:
   {
-    status,
-    reported_id"
-    reportedBy"
-    type"
-    description
-    ResolvedAt
-    $id
-    $createdAt
-    $updatedAt
+    status:string,
+    reported_id:string,
+    reportedBy:string,
+    type:string,
+    description:string,
+    ResolvedAt:dayjs(DATETIME | string),
+    $id:string,
+    $createdAt:string,
+    $updatedAt:string,
   }
 
 ```
@@ -153,22 +153,22 @@ DATA:
     Accept : application/json
   BODY:
   {
-    userId
-    email
-    API_KEY
+    userId,  ---> user id of the admin
+    API_KEY, ---> API_KEY of the admin
+    email: ---> email of the admin
   }
 
   POST ${BASE_URL}/api/v1/admin/rates
   DATA
   {
-    $id
-    ratedBy
-    rated
-    rate
-    feedback
-    $id
-    $createdAt
-    $updatedAt
+    $id:string,
+    ratedBy:string,
+    rated:string,
+    rate:number,
+    feedback:string,
+    $id:string,
+    $createdAt:string,
+    $updatedAt:string,
   }
 
 ```
@@ -180,24 +180,62 @@ DATA:
   HEADERS:
     "Content-Type" : "application/json"
     "Accept" : "application/json"
+
+  BODY:
+   {
+      userId,  ---> user id of the admin
+      API_KEY, ---> API_KEY of the admin
+   }
+
+  DATA:
+    {
+      role:string,
+      username:string,
+      notifSettings:boolean,
+      themeSettings:boolean,
+      subscription:string,
+      imageURL:string,
+      email:string,
+      fName :string,
+      lName :string,
+      fullName :string,
+      city:string,
+      rate:number,
+      $id:string,
+      $createdAt: dayjs(DATETIME | string),
+      $updatedAt: dayjs(DATETIME | string),
+    }
+
+```
+
+### Disable / Enable User
+
+```
+  API Endpoint
+  ({BASE_URL}/api/v1/admin/user)
+
+  Needed in the server side
+  HEADERS:
+    {
+      Content-Type: application/json,
+      Accept: application/json
+    }
+
   BODY:
     {
-      role,
-      username,
-      notifSettings ,
-      themeSettings ,
-      subscription ,
-      imageURL ,
-      email,
-      fName ,
-      lName ,
-      fullName ,
-      city,
-      rate,
-      $id,
-      $createdAt",
-      $updatedAt" ,
+      userId,  ---> user id of the admin
+      API_KEY, ---> API_KEY of the admin
+      reportedId, ---> id of the farmer | buyer
+      status: "enable" | "disable"
     }
+
+  DATA:
+  {
+    success: boolean,
+    message: string,
+    title: string
+  }
+
 
 ```
 

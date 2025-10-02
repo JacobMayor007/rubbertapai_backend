@@ -6,7 +6,7 @@ const checkRubberTapApiKey = async (req, res, next) => {
   }
 
   try {
-    if (apiKey !== process.env.RUBBERTAPAI_API_KEY) {
+    if (apiKey !== `${process.env.RUBBERTAPAI_API_KEY}`) {
       return res
         .status(403)
         .json({ error: "", message: "It does not equal to API Key" });
