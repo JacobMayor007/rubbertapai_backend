@@ -3,7 +3,7 @@ const router = express.Router();
 const { sentMessages } = require("../controller/messages/post");
 const { savePlot } = require("../controller/plot/post");
 const { addProduct } = require("../controller/product/post");
-const { postReport } = require("../controller/report/post");
+const { postReport, getAllReports } = require("../controller/report/post");
 const {
   createUser,
   isBuyer,
@@ -15,7 +15,10 @@ const { checkRubberTapApiKey } = require("../middleware/checkRubberTapKey");
 const { saveLeavesToTrees } = require("../controller/leaves/post");
 const { checkUserApiKey } = require("../middleware/checkUserApiKey");
 const { saveTrees } = require("../controller/tree/post");
-const { adminLogin } = require("../controller/admin/post");
+const {
+  adminLogin,
+  getRatesAndFeedbacks,
+} = require("../controller/admin/post");
 const { RateFeedbackUser } = require("../controller/rateAndFeedback/post");
 
 {
@@ -74,11 +77,20 @@ router.post(
   postNotification
 );
 
+router.post("/api/v1/admin/reports", checkUserApiKey, isAdmin, getAllReports);
+
 {
   /* Rate And Feedback */
 }
 
 //Rate User
 router.post("/api/v1/users/rate", checkUserApiKey, RateFeedbackUser);
+
+router.post(
+  "/api/v1/admin/rates",
+  checkUserApiKey,
+  isAdmin,
+  getRatesAndFeedbacks
+);
 
 module.exports = router;

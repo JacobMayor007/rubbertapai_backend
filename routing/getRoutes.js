@@ -15,7 +15,6 @@ const {
   getForecastWeather,
 } = require("../controller/weather/get");
 const { getMyPlot } = require("../controller/plot/get");
-const { getAllReports } = require("../controller/report/get");
 const { getMyLeaves } = require("../controller/leaves/get");
 const { getMyTrees, MyTrees } = require("../controller/tree/get");
 
@@ -51,7 +50,5 @@ router.get(
   "/api/v1/users/received-messages/:userId/:receiverId",
   getReceivedMessages
 );
-
-router.get("/admin/api", getAllReports);
 
 module.exports = router;

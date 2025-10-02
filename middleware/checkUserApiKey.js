@@ -4,6 +4,8 @@ const { database } = require("../lib/appwrite");
 const checkUserApiKey = async (req, res, next) => {
   const { userId, API_KEY } = req.body;
 
+  console.log(req.body);
+
   if (!API_KEY) {
     console.log("NO API KEY");
     return res.status(401).json({ error: "Missing API key" });
