@@ -18,6 +18,7 @@ const { saveTrees } = require("../controller/tree/post");
 const {
   adminLogin,
   getRatesAndFeedbacks,
+  getAllUsers,
 } = require("../controller/admin/post");
 const { RateFeedbackUser } = require("../controller/rateAndFeedback/post");
 
@@ -98,5 +99,7 @@ router.post(
   isAdmin,
   getRatesAndFeedbacks
 );
+
+router.post("/api/v1/admin/users", checkUserApiKey, isAdmin, getAllUsers);
 
 module.exports = router;
