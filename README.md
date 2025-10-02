@@ -75,7 +75,7 @@ The API uses standard HTTP response codes:
 
 ### API ENDPOINT
 ```
-SERVER SIDE
+NEEDED IN SERVER SIDE
 POST ${BASE_URL}/api/v1/admin/reports
 HEADERS:
   Content-Type : application/json
