@@ -29,6 +29,7 @@ const response = await fetch(`${url}/api/v1/admin`,
   method: "POST",
   headers:{
     "content-type": "application/json",
+    "Accept": "application/json"
   },
   body: JSON.stringify({email, password}),
 })
