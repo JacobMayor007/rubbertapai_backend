@@ -46,7 +46,6 @@ The response format will be a json format
 success: true,
       message: "Admin logged in successfully",
       data: {
-        token: jwt.jwt,
         sessionId: session.$id,
         userId: session.userId,
       },
