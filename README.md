@@ -75,7 +75,17 @@ The API uses standard HTTP response codes:
 
 ### API ENDPOINT
 ```
+SERVER SIDE
 POST ${BASE_URL}/api/v1/admin/reports
+HEADERS:
+  Content-Type : application/json
+  Accept : application/json
+BODY: 
+  {
+    userId
+    email
+    API_KEY
+  }
 
 DATA:
   {
@@ -94,8 +104,18 @@ DATA:
 
 ### Rates And Feedbacks
 ```
-  POST ${BASE_URL}/api/v1/admin/rates
+  NEEDED IN SERVER SIDE
+  HEADERS:
+    Content-Type : application/json
+    Accept : application/json
+  BODY: 
+  {
+    userId
+    email
+    API_KEY
+  }
 
+  POST ${BASE_URL}/api/v1/admin/rates
   DATA
   {
     $id
