@@ -18,9 +18,149 @@ Authorization: Bearer <your_jwt_token>
 
 ## API Endpoints
 
+### Admin
+
+### Login Admin Routes
+### FrontEnd format
+
+```
+const response = await fetch(`${url}/api/v1/admin`,
+{
+  method: "POST",
+  headers:{
+    "content-type": "application/json",
+    "Accept": "application/json"
+  },
+  body: JSON.stringify({email, password}),
+})
+```
+
+```
+http
+POST /api/v1/admin
+
+The response format will be a json format
+```
+```
+{
+success: true,
+      message: "Admin logged in successfully",
+      data: {
+        sessionId: session.$id,
+        userId: session.userId,
+      },
+}
+```
+
+## Response Format
+All endpoints return JSON responses in the following format:
+```json
+{
+  "success": boolean,
+  "message": "string",
+  "data": object | array
+}
+```
+
+## Error Handling
+The API uses standard HTTP response codes:
+- 200: Success
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 500: Internal Server Error
+
+### Report
+
+### API ENDPOINT
+```
+NEEDED IN SERVER SIDE
+POST ${BASE_URL}/api/v1/admin/reports
+HEADERS:
+  Content-Type : application/json
+  Accept : application/json
+BODY: 
+  {
+    userId
+    email
+    API_KEY
+  }
+
+DATA:
+  {
+    status,
+    reported_id"
+    reportedBy"
+    type"
+    description
+    ResolvedAt
+    $id
+    $createdAt
+    $updatedAt
+  }
+
+```
+
+### Rates And Feedbacks
+```
+  NEEDED IN SERVER SIDE
+  HEADERS:
+    Content-Type : application/json
+    Accept : application/json
+  BODY: 
+  {
+    userId
+    email
+    API_KEY
+  }
+
+  POST ${BASE_URL}/api/v1/admin/rates
+  DATA
+  {
+    $id
+    ratedBy
+    rated
+    rate
+    feedback
+    $id
+    $createdAt
+    $updatedAt
+  }
+  
+```
+
+### GET All Users 
+```
+  NEEDED IN SERVER SIDE
+  HEADERS:
+    "Content-Type" : "application/json"
+    "Accept" : "application/json"
+  BODY:
+    {
+      role,
+      username,
+      notifSettings ,
+      themeSettings ,
+      subscription ,
+      imageURL ,
+      email,
+      fName ,
+      lName ,
+      fullName ,
+      city,
+      rate,
+      $id,
+      $createdAt",
+      $updatedAt" ,
+    }
+
+```
+
 ### User Management
 #### Get User by ID
-```http
+```
+http
 GET /api/v1/users/user/:id
 ```
 - Parameters:
@@ -118,59 +258,6 @@ GET /api/v1/users/current/:city
 GET /admin/api
 ```
 - Requires admin authentication
-
-
-
-### Login Admin Routes
-### FrontEnd format
-
-```
-const response = await fetch(`${url}/api/v1/admin`,
-{
-  method: "POST",
-  headers:{
-    "content-type": "application/json",
-  },
-  body: JSON.stringify({email, password}),
-})
-```
-
-```
-http
-POST /api/v1/admin
-
-The response format will be a json format
-```
-```
-{
-success: true,
-      message: "Admin logged in successfully",
-      data: {
-        token: jwt.jwt,
-        sessionId: session.$id,
-        userId: session.userId,
-      },
-}
-```
-
-## Response Format
-All endpoints return JSON responses in the following format:
-```json
-{
-  "success": boolean,
-  "message": "string",
-  "data": object | array
-}
-```
-
-## Error Handling
-The API uses standard HTTP response codes:
-- 200: Success
-- 400: Bad Request
-- 401: Unauthorized
-- 403: Forbidden
-- 404: Not Found
-- 500: Internal Server Error
 
 ## Development
 To run the server locally:
