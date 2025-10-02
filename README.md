@@ -113,6 +113,37 @@ DATA:
 
 ```
 
+### Get Specific User Reports
+
+```
+  NEEDED IN SERVER SIDE
+  HEADERS:
+    Content-Type : application/json
+    Accept : application/json
+  BODY:
+  {
+    userId
+    email
+    API_KEY
+    reportedId
+  }
+
+  POST ${BASE_URL}/api/v1/admin/user
+  DATA:
+  {
+    status,
+    reported_id"
+    reportedBy"
+    type"
+    description
+    ResolvedAt
+    $id
+    $createdAt
+    $updatedAt
+  }
+
+```
+
 ### Rates And Feedbacks
 
 ```
