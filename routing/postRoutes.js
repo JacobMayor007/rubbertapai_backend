@@ -77,8 +77,6 @@ router.post(
   postNotification
 );
 
-router.post("/api/v1/admin/reports", checkUserApiKey, isAdmin, getAllReports);
-
 {
   /* Rate And Feedback */
 }
@@ -86,6 +84,14 @@ router.post("/api/v1/admin/reports", checkUserApiKey, isAdmin, getAllReports);
 //Rate User
 router.post("/api/v1/users/rate", checkUserApiKey, RateFeedbackUser);
 
+{
+  /* Admin */
+}
+
+//Get Reports
+router.post("/api/v1/admin/reports", checkUserApiKey, isAdmin, getAllReports);
+
+//Get Rates and Feedbacks
 router.post(
   "/api/v1/admin/rates",
   checkUserApiKey,

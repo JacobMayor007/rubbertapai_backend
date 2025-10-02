@@ -46,7 +46,7 @@ module.exports.getRatesAndFeedbacks = async (req, res) => {
       `${process.env.APPWRITE_RATE_FEED_COLLECTION_ID}`
     );
 
-    if (result.documents < 0) {
+    if (result.documents < 1) {
       return res.status(200).json([]);
     }
 
