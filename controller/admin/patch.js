@@ -1,4 +1,8 @@
+const { Query } = require("node-appwrite");
 const { database } = require("../../lib/appwrite");
+const { default: Expo } = require("expo-server-sdk");
+
+let expo = new Expo();
 
 module.exports.endisable = async (req, res) => {
   try {
@@ -13,6 +17,38 @@ module.exports.endisable = async (req, res) => {
         status: stats,
       }
     );
+
+    const notifyUser = await database.listDocuments(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_USER_COLLECTION_ID}`,
+      [Query.equal("$id", reportedId)]
+    );
+
+    const token = notifyUser.documents[0].pushToken;
+
+    if (!Expo.isExpoPushToken(token)) {
+      console.error("Invalid Expo push token:", token);
+      return;
+    }
+
+    let messages = [
+      {
+        to: token,
+        sound: "default",
+        title: stats === "enable" ? `Enable User` : `Disable User`,
+        body:
+          stats === "enable"
+            ? `You have been enabled by the admin, please try to follow the proper guidelines to prevent future disable account.`
+            : `You have been ${stats} by the admin, please contact help & support to retrieve your account.`,
+      },
+    ];
+
+    try {
+      let ticketChunk = await expo.sendPushNotificationsAsync(messages);
+      console.log("Notification sent:", ticketChunk);
+    } catch (error) {
+      console.error("Error sending notification:", error);
+    }
 
     if (!result) {
       return res.status(400).json({

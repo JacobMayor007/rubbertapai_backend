@@ -1,5 +1,8 @@
 const { Query } = require("node-appwrite");
 const { ID, database } = require("../../lib/appwrite");
+const { default: Expo } = require("expo-server-sdk");
+
+let expo = new Expo();
 
 module.exports.sentMessages = async (req, res) => {
   try {
@@ -23,6 +26,14 @@ module.exports.sentMessages = async (req, res) => {
         ]),
       ]
     );
+
+    const notifyUser = await database.listDocuments(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_USER_COLLECTION_ID}`,
+      [Query.equal("$id", req.body.receiver_id)]
+    );
+
+    const token = notifyUser.documents[0].pushToken;
 
     const chatRoomID = existingChats.documents[0]?.$id;
 
@@ -68,6 +79,36 @@ module.exports.sentMessages = async (req, res) => {
       },
       [`write("user:${data.userId}")`]
     );
+
+    await database.createDocument(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_NOTIF_COLLECTION_ID}`,
+      ID.unique(),
+      {
+        type: "Message Notifications",
+        message: `${data.senderName.split(" ")[0]} has sent you a message`,
+        isRead: false,
+        userId: `${data.userId}`,
+        senderProfile: `${data.senderProfile}`,
+        receiverId: `${data.receiver_id}`,
+      }
+    );
+
+    let messages = [
+      {
+        to: token,
+        sound: "default",
+        title: "New Message",
+        body: `You have a new message from ${data.senderName.split(" ")[0]}`,
+      },
+    ];
+
+    try {
+      let ticketChunk = await expo.sendPushNotificationsAsync(messages);
+      console.log("Notification sent:", ticketChunk);
+    } catch (error) {
+      console.error("Error sending notification:", error);
+    }
 
     return res.status(200);
   } catch (error) {
