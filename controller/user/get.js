@@ -5,7 +5,7 @@ require("dotenv").config();
 module.exports.getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const response = await database.getDocument(
       `${process.env.APPWRITE_DATABASE_ID}`,
       `${process.env.APPWRITE_USER_COLLECTION_ID}`,
@@ -20,6 +20,8 @@ module.exports.getUserById = async (req, res) => {
     }
 
     const doc = response;
+
+    console.log(doc);
 
     return res.status(200).json(doc);
   } catch (error) {

@@ -46,7 +46,7 @@ module.exports.subscription = async (req, res) => {
       benefit_2,
       userId,
       paymentMethod,
-    } = req.params;
+    } = req.body;
 
     const response = await database.createDocument(
       `${process.env.APPWRITE_DATABASE_ID}`,
@@ -59,7 +59,7 @@ module.exports.subscription = async (req, res) => {
         benefit_1,
         paymentMethod,
         price,
-        userId,
+        user_id: userId,
         benefit_2,
         period,
       }

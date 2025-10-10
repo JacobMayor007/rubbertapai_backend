@@ -17,7 +17,7 @@ const {
 const { getMyPlot } = require("../controller/plot/get");
 const { getMyLeaves } = require("../controller/leaves/get");
 const { getMyTrees, MyTrees } = require("../controller/tree/get");
-const { paymentHandle, getPayments } = require("../controller/payment/post");
+
 const { getPaymentById } = require("../controller/payment/get");
 
 const router = express.Router();

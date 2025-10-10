@@ -19,7 +19,9 @@ module.exports.getPaymentById = async (req, res) => {
       });
     }
 
-    return res.status(200).json(response.documents);
+    console.log(response.documents[0]);
+
+    return res.status(200).json(response.documents[0]);
   } catch (error) {
     console.error("Error fetching user:", error);
 
