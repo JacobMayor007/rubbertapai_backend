@@ -48,13 +48,8 @@ module.exports.subscription = async (req, res) => {
     } = req.params;
 
     return res.status(200).json({
-      subscriptionType,
-      period,
-      price,
-      benefit_1,
-      benefit_2,
-      userId,
-      paymentMethod,
+      title: subscriptionType,
+      message: period,
     });
   } catch (error) {
     console.error("Error fetching products:", error);
