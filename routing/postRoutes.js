@@ -22,7 +22,7 @@ const {
   getUserReportUsingId,
 } = require("../controller/admin/post");
 const { RateFeedbackUser } = require("../controller/rateAndFeedback/post");
-const { getAllPayments } = require("../controller/payment/post");
+const { getAllPayments, subscription } = require("../controller/payment/post");
 
 {
   /* MESSAGES */
@@ -59,7 +59,7 @@ router.post("/api/v1/users/product", checkUserApiKey, addProduct);
   /*Payment*/
 }
 
-//
+router.post("/api/v1/users/payment", checkUserApiKey, subscription);
 
 {
   /* User */
