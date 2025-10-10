@@ -92,7 +92,7 @@ module.exports.getAllReports = async (req, res) => {
       `${process.env.APPWRITE_REPO_COLLECTION_ID}`
     );
 
-    return res.status(200).json(getAllReports);
+    return res.status(200).json(getAllReports.documents);
   } catch (error) {
     console.error("Error fetching products:", error);
 

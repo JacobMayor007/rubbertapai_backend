@@ -17,6 +17,8 @@ const {
 const { getMyPlot } = require("../controller/plot/get");
 const { getMyLeaves } = require("../controller/leaves/get");
 const { getMyTrees, MyTrees } = require("../controller/tree/get");
+const { paymentHandle, getPayments } = require("../controller/payment/post");
+const { getPaymentById } = require("../controller/payment/get");
 
 const router = express.Router();
 
@@ -43,6 +45,8 @@ router.get("/api/v1/users/current/:city", getCurrentWeather);
 router.get("/api/v1/users/trees/:plotId/:userId", getMyTrees);
 
 router.get("/api/v1/users/trees/:userId", MyTrees);
+
+router.get("/api/v1/users/payment/:id", getPaymentById);
 
 router.get("/api/v1/users/sent-messages/:userId/:receiverId", getSentMessages);
 

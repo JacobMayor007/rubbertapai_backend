@@ -22,6 +22,7 @@ const {
   getUserReportUsingId,
 } = require("../controller/admin/post");
 const { RateFeedbackUser } = require("../controller/rateAndFeedback/post");
+const { getAllPayments } = require("../controller/payment/post");
 
 {
   /* MESSAGES */
@@ -53,6 +54,12 @@ router.post("/api/v1/users/trees", checkUserApiKey, saveTrees);
 }
 //Add A Product
 router.post("/api/v1/users/product", checkUserApiKey, addProduct);
+
+{
+  /*Payment*/
+}
+
+//
 
 {
   /* User */
@@ -92,6 +99,9 @@ router.post("/api/v1/users/rate", checkUserApiKey, RateFeedbackUser);
 
 //Get Reports
 router.post("/api/v1/admin/reports", checkUserApiKey, isAdmin, getAllReports);
+
+//Get Payments
+router.post("/api/v1/admin/payments", checkUserApiKey, isAdmin, getAllPayments);
 
 //Get Rates and Feedbacks
 router.post(
