@@ -8,6 +8,7 @@ const {
   changeName,
   upsertPushTokenUser,
   updateCity,
+  updateProfile,
 } = require("../controller/user/patch");
 const { isAdmin } = require("../controller/user/post");
 const { endisable } = require("../controller/admin/patch");
@@ -28,6 +29,9 @@ router.patch("/api/v1/users/products", checkUserApiKey, editProduct);
 {
   /* Users */
 }
+
+//Profile Update
+router.patch("/api/v1/users/profile", checkUserApiKey, updateProfile);
 
 //Email Update
 router.patch("/api/v1/users/email", checkUserApiKey, changeEmail);
