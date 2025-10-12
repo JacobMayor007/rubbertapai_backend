@@ -11,12 +11,15 @@ let expo = new Expo();
 const app = express();
 const port = process.env.PORT;
 
-let random;
-
 // FIX: Middleware order is important - urlencoded should come first
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
+
 app.use("/", routes);
 
 const getUsersLocation = async () => {
