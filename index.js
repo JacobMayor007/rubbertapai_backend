@@ -51,6 +51,11 @@ const checkWeatherAndNotify = async (checkUserWeather) => {
   const data = await response.json();
   const forecastDays = data.forecast.forecastday;
   const token = checkUserWeather.pushToken;
+  const weatherAlert = checkUserWeather.weatherAlert;
+
+  if (!weatherAlert) {
+    return;
+  }
 
   // Fix time calculation - use 0-23 range
   let currentHour = dayjs().hour();
@@ -108,7 +113,9 @@ const checkWeatherAndNotify = async (checkUserWeather) => {
   }
 };
 
-setInterval(getUsersLocation, 30 * 60 * 1000);
+setInterval(() => {
+  getUsersLocation();
+}, 60 * 1000);
 
 app.listen(port, () => {
   console.log(`Listening on PORT ${port}`);

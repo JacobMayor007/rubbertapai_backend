@@ -254,6 +254,8 @@ module.exports.updateNotif = async (req, res) => {
   try {
     const { userId, notif } = req.body;
 
+    console.log(req.body);
+
     const response = await database.updateDocument(
       `${process.env.APPWRITE_DATABASE_ID}`,
       `${process.env.APPWRITE_USER_COLLECTION_ID}`,
@@ -274,6 +276,14 @@ module.exports.updateNotif = async (req, res) => {
           "There is an error occured when updating notification, please try again!",
       });
     }
+
+    t;
+    console.log(
+      response.notif,
+      response.marketAlert,
+      response.weatherAlert,
+      response.messageAlert
+    );
 
     return res.status(200).json({
       success: true,
@@ -416,6 +426,9 @@ module.exports.updateMarketAlert = async (req, res) => {
 module.exports.updateMessageAlert = async (req, res) => {
   try {
     const { userId, message } = req.body;
+
+    console.log(req.params);
+    console.log(req.body);
 
     const response = await database.updateDocument(
       `${process.env.APPWRITE_DATABASE_ID}`,
