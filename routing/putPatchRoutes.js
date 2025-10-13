@@ -9,6 +9,10 @@ const {
   upsertPushTokenUser,
   updateCity,
   updateProfile,
+  updateWeatherAlert,
+  updateNotif,
+  updateMarketAlert,
+  updateMessageAlert,
 } = require("../controller/user/patch");
 const { isAdmin } = require("../controller/user/post");
 const { endisable } = require("../controller/admin/patch");
@@ -32,6 +36,26 @@ router.patch("/api/v1/users/products", checkUserApiKey, editProduct);
 
 //Profile Update
 router.patch("/api/v1/users/profile", checkUserApiKey, updateProfile);
+
+//Weather
+router.patch(
+  "/api/v1/users/weather-alert",
+  checkUserApiKey,
+  updateWeatherAlert
+);
+
+//Notification Alert
+router.patch("/api/v1/users/notif", checkUserApiKey, updateNotif);
+
+//Message Alert
+router.patch(
+  "/api/v1/users/message-alert",
+  checkUserApiKey,
+  updateMessageAlert
+);
+
+//Market Alert
+router.patch("/api/v1/users/market-alert", checkUserApiKey, updateMarketAlert);
 
 //Email Update
 router.patch("/api/v1/users/email", checkUserApiKey, changeEmail);

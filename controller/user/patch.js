@@ -250,6 +250,219 @@ module.exports.updateCity = async (req, res) => {
   }
 };
 
+module.exports.updateNotif = async () => {
+  try {
+    const { userId, notif } = req.body;
+
+    const response = await database.updateDocument(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_USER_COLLECTION_ID}`,
+      userId,
+      {
+        notif: notif,
+      }
+    );
+
+    if (!response) {
+      return res.status(400).json({
+        success: false,
+        title: "Error occured",
+        message:
+          "There is an error occured when updating notification, please try again!",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      title: "Successfully updated weather",
+      message: "You have successfully updated notification",
+    });
+  } catch (error) {
+    console.error(error);
+
+    if (error.code === 404) {
+      return res.status(404).json({
+        success: false,
+        error: "User collection not found, failed to register token",
+      });
+    }
+
+    if (error.code === 400) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid query parameters",
+        details: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+module.exports.updateWeatherAlert = async () => {
+  try {
+    const { userId, weather } = req.body;
+
+    const response = await database.updateDocument(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_USER_COLLECTION_ID}`,
+      userId,
+      {
+        weather: weather,
+      }
+    );
+
+    if (!response) {
+      return res.status(400).json({
+        success: false,
+        title: "Error occured",
+        message:
+          "There is an error occured when updating weather alert, please try again!",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      title: "Successfully updated weather",
+      message: "You have successfully updated weather notification",
+    });
+  } catch (error) {
+    console.error(error);
+
+    if (error.code === 404) {
+      return res.status(404).json({
+        success: false,
+        error: "User collection not found, failed to register token",
+      });
+    }
+
+    if (error.code === 400) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid query parameters",
+        details: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+module.exports.updateMarketAlert = async () => {
+  try {
+    const { userId, market } = req.body;
+
+    const response = await database.updateDocument(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_USER_COLLECTION_ID}`,
+      userId,
+      {
+        market: market,
+      }
+    );
+
+    if (!response) {
+      return res.status(400).json({
+        success: false,
+        title: "Error occured",
+        message:
+          "There is an error occured when updating market alert, please try again!",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      title: "Successfully updated weather",
+      message: "You have successfully updated market notification",
+    });
+  } catch (error) {
+    console.error(error);
+
+    if (error.code === 404) {
+      return res.status(404).json({
+        success: false,
+        error: "User collection not found, failed to register token",
+      });
+    }
+
+    if (error.code === 400) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid query parameters",
+        details: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+module.exports.updateMessageAlert = async () => {
+  try {
+    const { userId, message } = req.body;
+
+    const response = await database.updateDocument(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_USER_COLLECTION_ID}`,
+      userId,
+      {
+        message: message,
+      }
+    );
+
+    if (!response) {
+      return res.status(400).json({
+        success: false,
+        title: "Error occured",
+        message: "There is an error occured when updating, please try again!",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      title: "Successfully updated weather",
+      message: "You have successfully updated weather notification",
+    });
+  } catch (error) {
+    console.error(error);
+
+    if (error.code === 404) {
+      return res.status(404).json({
+        success: false,
+        error: "User collection not found, failed to register token",
+      });
+    }
+
+    if (error.code === 400) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid query parameters",
+        details: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports.updateProfile = async (req, res) => {
   try {
     const { file, userId } = req.body;
