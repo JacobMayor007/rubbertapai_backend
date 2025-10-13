@@ -250,7 +250,7 @@ module.exports.updateCity = async (req, res) => {
   }
 };
 
-module.exports.updateNotif = async () => {
+module.exports.updateNotif = async (req, res) => {
   try {
     const { userId, notif, message, weather, market } = req.body;
 
@@ -306,7 +306,7 @@ module.exports.updateNotif = async () => {
     });
   }
 };
-module.exports.updateWeatherAlert = async () => {
+module.exports.updateWeatherAlert = async (req, res) => {
   try {
     const { userId, weather } = req.body;
 
@@ -359,7 +359,7 @@ module.exports.updateWeatherAlert = async () => {
     });
   }
 };
-module.exports.updateMarketAlert = async () => {
+module.exports.updateMarketAlert = async (req, res) => {
   try {
     const { userId, market } = req.body;
 
@@ -413,7 +413,7 @@ module.exports.updateMarketAlert = async () => {
   }
 };
 
-module.exports.updateMessageAlert = async () => {
+module.exports.updateMessageAlert = async (req, res) => {
   try {
     const { userId, message } = req.body;
 
