@@ -252,7 +252,7 @@ module.exports.updateCity = async (req, res) => {
 
 module.exports.updateNotif = async () => {
   try {
-    const { userId, notif } = req.body;
+    const { userId, notif, message, weather, market } = req.body;
 
     const response = await database.updateDocument(
       `${process.env.APPWRITE_DATABASE_ID}`,
@@ -260,6 +260,9 @@ module.exports.updateNotif = async () => {
       userId,
       {
         notif: notif,
+        marketAlert: market,
+        weatherAlert: weather,
+        messageAlert: message,
       }
     );
 
@@ -312,7 +315,7 @@ module.exports.updateWeatherAlert = async () => {
       `${process.env.APPWRITE_USER_COLLECTION_ID}`,
       userId,
       {
-        weather: weather,
+        weatherAlert: weather,
       }
     );
 
@@ -365,7 +368,7 @@ module.exports.updateMarketAlert = async () => {
       `${process.env.APPWRITE_USER_COLLECTION_ID}`,
       userId,
       {
-        market: market,
+        marketAlert: market,
       }
     );
 
@@ -419,7 +422,7 @@ module.exports.updateMessageAlert = async () => {
       `${process.env.APPWRITE_USER_COLLECTION_ID}`,
       userId,
       {
-        message: message,
+        messageAlert: message,
       }
     );
 
