@@ -38,6 +38,9 @@ module.exports.sentMessages = async (req, res) => {
 
     const chatRoomID = existingChats.documents[0]?.$id;
 
+    console.log(token);
+    console.log(messageAlert);
+
     if (existingChats.total === 0) {
       await database.createDocument(
         `${process.env.APPWRITE_DATABASE_ID}`,

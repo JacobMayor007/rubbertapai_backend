@@ -115,7 +115,7 @@ const checkWeatherAndNotify = async (checkUserWeather) => {
 
 setInterval(() => {
   getUsersLocation();
-}, 60 * 1000);
+}, 10 * 60 * 1000);
 
 app.listen(port, () => {
   console.log(`Listening on PORT ${port}`);
