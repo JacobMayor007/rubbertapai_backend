@@ -9,7 +9,6 @@ const { getChatRoom } = require("../controller/chat/get");
 const {
   getSentMessages,
   getReceivedMessages,
-  getConversationMessages,
 } = require("../controller/messages/get");
 const {
   getCurrentWeather,
