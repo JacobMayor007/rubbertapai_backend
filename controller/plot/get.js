@@ -7,17 +7,38 @@ module.exports.getMyPlot = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const response = await database.listDocuments(
-      `${process.env.APPWRITE_DATABASE_ID}`,
-      `${process.env.APPWRITE_PLOT_COLLECTION_ID}`,
-      [Query.equal("user_id", userId)]
-    );
+    let hasMore = true;
+    let lastDocumentId = null;
+    const limit = 25;
+    const allPlots = [];
 
-    if (response.documents.length === 0) {
+    while (hasMore) {
+      const queries = [Query.equal("user_id", userId), Query.limit(limit)];
+
+      if (lastDocumentId) {
+        queries.push(Query.cursorAfter(lastDocumentId));
+      }
+
+      const response = await database.listDocuments(
+        `${process.env.APPWRITE_DATABASE_ID}`,
+        `${process.env.APPWRITE_PLOT_COLLECTION_ID}`,
+        queries
+      );
+
+      allPlots.push(...response.documents);
+
+      if (response.documents.length < limit) {
+        hasMore = false;
+      } else {
+        lastDocumentId = response.documents[response.documents.length - 1].$id;
+      }
+    }
+
+    if (allPlots.length === 0) {
       return res.status(200).json([]);
     }
 
-    const plots = response.documents.map((doc) => ({
+    const plots = allPlots.map((doc) => ({
       $id: doc.$id,
       $createdAt: doc.$createdAt,
       name: doc.name,

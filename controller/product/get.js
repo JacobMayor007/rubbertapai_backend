@@ -6,17 +6,38 @@ module.exports.getUserProduct = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const response = await database.listDocuments(
-      process.env.APPWRITE_DATABASE_ID,
-      process.env.APPWRITE_PROD_COLLECTION_ID,
-      [Query.equal("user_id", userId)]
-    );
+    let hasMore = true;
+    let lastDocumentId = null;
+    const allProducts = [];
+    const limit = 25;
 
-    if (response.documents.length === 0) {
+    while (hasMore) {
+      const queries = [Query.equal("user_id", userId), Query.limit(limit)];
+
+      if (lastDocumentId) {
+        queries.push(Query.cursorAfter(lastDocumentId));
+      }
+
+      const response = await database.listDocuments(
+        process.env.APPWRITE_DATABASE_ID,
+        process.env.APPWRITE_PROD_COLLECTION_ID,
+        queries
+      );
+
+      allProducts.push(...response.documents);
+
+      if (response.documents.length < limit) {
+        hasMore = false;
+      } else {
+        lastDocumentId = response.documents[response.documents.length - 1].$id;
+      }
+    }
+
+    if (allProducts.length === 0) {
       return res.status(200).json([]);
     }
 
-    const product = response.documents.map((doc) => ({
+    const products = allProducts.map((doc) => ({
       $id: doc.$id,
       $createdAt: doc.$createdAt,
       address: doc.address,
@@ -33,7 +54,7 @@ module.exports.getUserProduct = async (req, res) => {
       region: doc.region,
     }));
 
-    return res.status(200).json(product);
+    return res.status(200).json(products);
   } catch (error) {
     console.error("Error fetching products:", error);
 

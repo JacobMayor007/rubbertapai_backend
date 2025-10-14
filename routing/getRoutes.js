@@ -9,6 +9,7 @@ const { getChatRoom } = require("../controller/chat/get");
 const {
   getSentMessages,
   getReceivedMessages,
+  getConversationMessages,
 } = require("../controller/messages/get");
 const {
   getCurrentWeather,
@@ -54,5 +55,7 @@ router.get(
   "/api/v1/users/received-messages/:userId/:receiverId",
   getReceivedMessages
 );
+
+// router.get("/messages/:userId/:receiverId", getConversationMessages);
 
 module.exports = router;

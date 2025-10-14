@@ -10,7 +10,7 @@ module.exports.getAllPayments = async (req, res) => {
 
     return res.status(200).json(getAllPayments.documents);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching payments:", error);
 
     if (error.code === 404) {
       return res.status(404).json({

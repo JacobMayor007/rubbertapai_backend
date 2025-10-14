@@ -19,16 +19,22 @@ module.exports.postReport = async (req, res) => {
       `${process.env.APPWRITE_DATABASE_ID}`,
       `${process.env.APPWRITE_REPO_COLLECTION_ID}`,
       [
-        Query.and([
-          Query.equal("reportedBy", reportedBy),
-          Query.equal("reported_id", reported_id),
-        ]),
+        Query.equal("reportedBy", reportedBy),
+        Query.equal("reported_id", reported_id),
       ]
     );
 
+    if (done.documents.length === 1) {
+      return res.status(409).json({
+        success: false,
+        title: "Already reported",
+        message: "You have already reported this user",
+      });
+    }
+
     // Create document
     const response = await database.createDocument(
-      process.env.APPWRITE_DATABASE_ID, // Removed template literals - not needed
+      process.env.APPWRITE_DATABASE_ID,
       process.env.APPWRITE_REPO_COLLECTION_ID,
       ID.unique(),
       {
@@ -87,12 +93,34 @@ module.exports.postReport = async (req, res) => {
 
 module.exports.getAllReports = async (req, res) => {
   try {
-    const getAllReports = await database.listDocuments(
-      `${process.env.APPWRITE_DATABASE_ID}`,
-      `${process.env.APPWRITE_REPO_COLLECTION_ID}`
-    );
+    let hasMore = true;
+    let lastDocumentId = null;
+    const limit = 25;
+    const allReports = [];
 
-    return res.status(200).json(getAllReports.documents);
+    while (hasMore) {
+      const queries = [Query.limit(limit)];
+
+      if (lastDocumentId) {
+        queries.push(Query.cursorAfter(lastDocumentId));
+      }
+
+      const getAllReports = await database.listDocuments(
+        `${process.env.APPWRITE_DATABASE_ID}`,
+        `${process.env.APPWRITE_REPO_COLLECTION_ID}`,
+        queries
+      );
+
+      allReports.push(...getAllReports.documents);
+
+      if (getAllReports.documents.length < limit) {
+        hasMore = false;
+      } else {
+        lastDocumentId =
+          getAllReports.documents[getAllReports.documents.length - 1].$id;
+      }
+    }
+    return res.status(200).json(allReports);
   } catch (error) {
     console.error("Error fetching products:", error);
 

@@ -50,10 +50,10 @@ module.exports.getChatMate = async (req, res) => {
     console.log("Fetching user:", { id });
 
     // Get user document
-    const response = await database.getDocument(
+    const response = await database.listDocuments(
       `${process.env.APPWRITE_DATABASE_ID}`,
       `${process.env.APPWRITE_USER_COLLECTION_ID}`,
-      `${id}`
+      [Query.equal("$id", id)]
     );
 
     if (!response) {
@@ -63,7 +63,9 @@ module.exports.getChatMate = async (req, res) => {
       });
     }
 
-    const doc = response;
+    const doc = response.documents[0];
+
+    console.log(doc);
 
     return res.status(200).json(doc);
   } catch (error) {

@@ -5,23 +5,45 @@ module.exports.getMyLeaves = async (req, res) => {
   try {
     const { userId, treeId, plot_id } = req.params;
 
-    const response = await database.listDocuments(
-      `${process.env.APPWRITE_DATABASE_ID}`,
-      `${process.env.APPWRITE_LEAF_COLLECTION_ID}`,
-      [
+    const allLeaves = [];
+    let lastDocumentId = null;
+    let hasMore = true;
+    const limit = 10;
+
+    while (hasMore) {
+      const queries = [
         Query.and([
           Query.equal("user_id", userId),
           Query.equal("plot_id", plot_id),
           Query.equal("tree_id", treeId),
         ]),
-      ]
-    );
+        Query.limit(limit),
+      ];
+
+      if (lastDocumentId) {
+        queries.push(Query.cursorAfter(lastDocumentId));
+      }
+
+      const response = await database.listDocuments(
+        `${process.env.APPWRITE_DATABASE_ID}`,
+        `${process.env.APPWRITE_LEAF_COLLECTION_ID}`,
+        queries
+      );
+
+      allLeaves.push(...response.documents);
+
+      if (response.documents.length < limit) {
+        hasMore = false; // No more chat rooms to fetch
+      } else {
+        lastDocumentId = response.documents[response.documents.length - 1].$id;
+      }
+    }
 
     if (response.documents.length === 0) {
       return res.status(200).json([]);
     }
 
-    const leaves = response.documents.map((doc) => ({
+    const leaves = allLeaves.map((doc) => ({
       $id: doc.$id,
       $createdAt: doc.$createdAt,
       user_id: doc.user_id,

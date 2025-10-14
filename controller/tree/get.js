@@ -9,24 +9,46 @@ module.exports.getMyTrees = async (req, res) => {
 
     console.log(req.params);
 
-    const response = await database.listDocuments(
-      `${process.env.APPWRITE_DATABASE_ID}`,
-      `${process.env.APPWRITE_TREE_COLLECTION_ID}`,
-      [
+    let hasMore = true;
+    let lastDocumentId = null;
+    const limit = 25;
+    const allTrees = [];
+
+    while (hasMore) {
+      const queries = [
         Query.and([
           Query.equal("user_id", userId),
           Query.equal("plot_id", plotId),
         ]),
-      ]
-    );
+        Query.limit(25),
+      ];
 
-    if (response.documents.length === 0) {
-      console.log(response.documents.length);
+      if (lastDocumentId) {
+        queries.push(Query.cursorAfter(lastDocumentId));
+      }
+
+      const response = await database.listDocuments(
+        `${process.env.APPWRITE_DATABASE_ID}`,
+        `${process.env.APPWRITE_TREE_COLLECTION_ID}`,
+        queries
+      );
+
+      allTrees.push(...response.documents);
+
+      if (response.documents.length < limit) {
+        hasMore = false;
+      } else {
+        lastDocumentId = response.documents[response.documents.length - 1].$id;
+      }
+    }
+
+    if (allTrees.length === 0) {
+      console.log(allTrees.length);
 
       return res.status(200).json([]);
     }
 
-    const trees = response.documents.map((doc) => ({
+    const trees = allTrees.map((doc) => ({
       $id: doc.$id,
       $createdAt: doc.$createdAt,
       plot_id: doc.plot_id,
@@ -36,8 +58,6 @@ module.exports.getMyTrees = async (req, res) => {
     }));
 
     return res.status(200).json(trees);
-
-    
   } catch (error) {
     console.error("Error fetching tree error:", error);
 
