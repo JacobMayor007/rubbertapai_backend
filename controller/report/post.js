@@ -28,7 +28,7 @@ module.exports.postReport = async (req, res) => {
       return res.status(409).json({
         success: false,
         title: "Already reported",
-        message: "You have already reported this user",
+        message: "You have already reported this user.",
       });
     }
 
