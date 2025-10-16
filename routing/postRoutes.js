@@ -23,6 +23,7 @@ const {
 } = require("../controller/admin/post");
 const { RateFeedbackUser } = require("../controller/rateAndFeedback/post");
 const { getAllPayments, subscription } = require("../controller/payment/post");
+const { getMyNotifications } = require("../controller/notifications/post");
 
 {
   /* MESSAGES */
@@ -92,6 +93,8 @@ router.post(
 
 //Rate User
 router.post("/api/v1/users/rate", checkUserApiKey, RateFeedbackUser);
+
+router.post("/api/v1/users/notifications", checkUserApiKey, getMyNotifications);
 
 {
   /* Admin */
