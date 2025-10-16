@@ -42,18 +42,40 @@ module.exports.adminLogin = async (req, res) => {
 
 module.exports.getRatesAndFeedbacks = async (req, res) => {
   try {
-    const result = await database.listDocuments(
-      `${process.env.APPWRITE_DATABASE_ID}`,
-      `${process.env.APPWRITE_RATE_FEED_COLLECTION_ID}`
-    );
+    const allFeedbacks = [];
+    let lastDocumentId = null;
+    let hasMore = true;
+    const limit = 2;
 
-    if (result.documents < 1) {
+    while (hasMore) {
+      const queries = [Query.orderDesc("$createdAt"), Query.limit(limit)];
+
+      if (lastDocumentId) {
+        queries.push(Query.cursorAfter(lastDocumentId));
+      }
+
+      const response = await database.listDocuments(
+        process.env.APPWRITE_DATABASE_ID,
+        process.env.APPWRITE_RATE_FEED_COLLECTION_ID,
+        queries
+      );
+
+      allFeedbacks.push(...response.documents);
+
+      if (response.documents.length < limit) {
+        hasMore = false;
+      } else {
+        lastDocumentId = response.documents[response.documents.length - 1].$id;
+      }
+    }
+
+    if (allFeedbacks.length < 1) {
       return res.status(200).json([]);
     }
 
-    return res.status(200).json(result);
+    return res.status(200).json(allFeedbacks);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching rates and feedbacks:", error);
 
     if (error.code === 404) {
       return res.status(404).json({
@@ -81,18 +103,43 @@ module.exports.getRatesAndFeedbacks = async (req, res) => {
 
 module.exports.getAllUsers = async (req, res) => {
   try {
-    const result = await database.listDocuments(
-      `${process.env.APPWRITE_DATABASE_ID}`,
-      `${process.env.APPWRITE_USER_COLLECTION_ID}`
-    );
+    const allUsers = [];
+    let lastDocumentId = null;
+    let hasMore = true;
+    const limit = 25; // You can change this value
 
-    if (result.documents < 1) {
+    while (hasMore) {
+      const queries = [
+        Query.or([Query.equal("role", "farmer"), Query.equal("role", "buyer")]),
+        Query.limit(limit),
+      ];
+
+      if (lastDocumentId) {
+        queries.push(Query.cursorAfter(lastDocumentId));
+      }
+
+      const response = await database.listDocuments(
+        process.env.APPWRITE_DATABASE_ID,
+        process.env.APPWRITE_USER_COLLECTION_ID,
+        queries
+      );
+
+      allUsers.push(...response.documents);
+
+      if (response.documents.length < limit) {
+        hasMore = false;
+      } else {
+        lastDocumentId = response.documents[response.documents.length - 1].$id;
+      }
+    }
+
+    if (allUsers.length < 1) {
       return res.status(200).json([]);
     }
 
-    return res.status(200).json(result);
+    return res.status(200).json(allUsers);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching users:", error);
 
     if (error.code === 404) {
       return res.status(404).json({
