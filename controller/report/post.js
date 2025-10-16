@@ -3,10 +3,20 @@ const { database, ID } = require("../../lib/appwrite");
 
 module.exports.postReport = async (req, res) => {
   try {
-    const { reported_id, reportedBy, type, description } = req.body;
+    const {
+      reported_id,
+      userId,
+      type,
+      description,
+      reportedBy_Name,
+      reported_id_name,
+      reportedBy_Image,
+      reported_id_image,
+      proof,
+    } = req.body;
 
     // Validation
-    if (!reported_id || !reportedBy || !type || !description) {
+    if (!reported_id || !userId || !type || !description) {
       return res.status(400).json({
         // Changed from 404 to 400
         success: false,
@@ -19,7 +29,7 @@ module.exports.postReport = async (req, res) => {
       `${process.env.APPWRITE_DATABASE_ID}`,
       `${process.env.APPWRITE_REPO_COLLECTION_ID}`,
       [
-        Query.equal("reportedBy", reportedBy),
+        Query.equal("reportedBy", userId),
         Query.equal("reported_id", reported_id),
       ]
     );
@@ -32,7 +42,6 @@ module.exports.postReport = async (req, res) => {
       });
     }
 
-    // Create document
     const response = await database.createDocument(
       process.env.APPWRITE_DATABASE_ID,
       process.env.APPWRITE_REPO_COLLECTION_ID,
@@ -40,11 +49,16 @@ module.exports.postReport = async (req, res) => {
       {
         status: "pending",
         reported_id,
-        reportedBy,
+        reportedBy: userId,
         type,
         description,
+        reportedBy_Name,
+        reported_id_name,
+        reportedBy_Image,
+        reported_id_image,
+        proof,
       },
-      [`write("user:${reportedBy}")`]
+      [`write("user:${userId}")`]
     );
 
     if (!response.$id) {

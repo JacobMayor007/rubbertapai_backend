@@ -3,7 +3,16 @@ const { database, ID } = require("../../lib/appwrite");
 
 module.exports.RateFeedbackUser = async (req, res) => {
   try {
-    const { userId, receivedId, rate, feedback } = req.body;
+    const {
+      userId,
+      receivedId,
+      rate,
+      feedback,
+      ratedByName,
+      ratedName,
+      ratedImage,
+      ratedByImage,
+    } = req.body;
     console.log(req.body);
 
     if (feedback.length > 1549) {
@@ -38,6 +47,10 @@ module.exports.RateFeedbackUser = async (req, res) => {
         rated: receivedId,
         rate: Number(rate),
         feedback: feedback || "",
+        ratedByName,
+        ratedName,
+        ratedImage,
+        ratedByImage,
       }
     );
 
@@ -66,7 +79,7 @@ module.exports.RateFeedbackUser = async (req, res) => {
         `${process.env.APPWRITE_DATABASE_ID}`,
         `${process.env.APPWRITE_USER_COLLECTION_ID}`,
         receivedId,
-        { rate: average }
+        { rate: Math.round(average) }
       );
     }
 
