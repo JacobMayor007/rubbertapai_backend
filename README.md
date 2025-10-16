@@ -100,15 +100,20 @@ BODY:
 
 DATA:
   {
-    status:string,
-    reported_id:string,
-    reportedBy:string,
-    type:string,
-    description:string,
-    ResolvedAt,
-    $id:string,
     $createdAt:string,
     $updatedAt:string,
+    $id:string,
+    reported_id:string,
+    reported_id_image: string,
+    reported_id_name: string,
+    reportedBy:string,
+    reportedBy_Name: string,
+    reportedBy_Image: string,
+    status:string,
+    type:string,
+    description:string,
+    proof: string | URL,
+    ResolvedAt,
   }
 
 ```
@@ -162,13 +167,17 @@ DATA:
   DATA
   {
     $id:string,
-    ratedBy:string,
-    rated:string,
-    rate:number,
-    feedback:string,
-    $id:string,
     $createdAt:string,
     $updatedAt:string,
+    $id:string,
+    ratedBy:string,
+    ratedByName:string,
+    ratedByImage:string,
+    rated:string,
+    ratedName:string,
+    ratedImage:string,
+    rate:number,
+    feedback:string,
   }
 
 ```
