@@ -19,10 +19,13 @@ const { getMyLeaves } = require("../controller/leaves/get");
 const { getMyTrees, MyTrees } = require("../controller/tree/get");
 
 const { getPaymentById } = require("../controller/payment/get");
+const { getMyNotifications } = require("../controller/notifications/post");
 
 const router = express.Router();
 
 router.get("/api/v1/users/user/:id", getUserById);
+
+router.get("/api/v1/users/notifications/:userId", getMyNotifications);
 
 router.get("/api/v1/users/search-user/:name", searchUser);
 

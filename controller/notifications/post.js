@@ -3,7 +3,7 @@ const { database } = require("../../lib/appwrite");
 
 module.exports.getMyNotifications = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { userId } = req.params;
 
     let hasMore = true;
     let lastDocumentId = null;

@@ -94,8 +94,6 @@ router.post(
 //Rate User
 router.post("/api/v1/users/rate", checkUserApiKey, RateFeedbackUser);
 
-router.post("/api/v1/users/notifications", checkUserApiKey, getMyNotifications);
-
 {
   /* Admin */
 }
