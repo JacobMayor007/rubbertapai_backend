@@ -19,10 +19,13 @@ const { getMyLeaves } = require("../controller/leaves/get");
 const { getMyTrees, MyTrees } = require("../controller/tree/get");
 
 const { getPaymentById } = require("../controller/payment/get");
+const { rubberPrice } = require("../controller/commodity/get");
 
 const router = express.Router();
 
 router.get("/api/v1/users/user/:id", getUserById);
+
+router.get("/api/v1/users/commodity-price", rubberPrice);
 
 router.get("/api/v1/users/search-user/:name", searchUser);
 
