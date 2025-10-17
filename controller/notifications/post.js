@@ -11,7 +11,7 @@ module.exports.getMyNotifications = async (req, res) => {
     const limit = 25;
 
     while (hasMore) {
-      const queries = [Query.equal("userId", userId), Query.limit(limit)];
+      const queries = [Query.equal("receiverId", userId), Query.limit(limit)];
 
       if (lastDocumentId) {
         queries.push(Query.cursorAfter(lastDocumentId));

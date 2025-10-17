@@ -13,6 +13,7 @@ const {
   updateNotif,
   updateMarketAlert,
   updateMessageAlert,
+  updateRead,
 } = require("../controller/user/patch");
 const { isAdmin } = require("../controller/user/post");
 const { endisable } = require("../controller/admin/patch");
@@ -20,7 +21,6 @@ const { endisable } = require("../controller/admin/patch");
 {
   /* Plots */
 }
-
 router.patch("/api/v1/users/plots", checkUserApiKey, editPlot);
 
 {
@@ -43,6 +43,8 @@ router.patch(
   checkUserApiKey,
   updateWeatherAlert
 );
+
+router.patch("/api/v1/users/notifications", checkUserApiKey, updateRead);
 
 //Notification Alert
 router.patch("/api/v1/users/notif", checkUserApiKey, updateNotif);

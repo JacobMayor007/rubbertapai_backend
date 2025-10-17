@@ -23,7 +23,10 @@ const {
 } = require("../controller/admin/post");
 const { RateFeedbackUser } = require("../controller/rateAndFeedback/post");
 const { getAllPayments, subscription } = require("../controller/payment/post");
-const { getMyNotifications } = require("../controller/notifications/post");
+const {
+  getMyNotifications,
+  HandledNotifications,
+} = require("../controller/notifications/post");
 
 {
   /* MESSAGES */
