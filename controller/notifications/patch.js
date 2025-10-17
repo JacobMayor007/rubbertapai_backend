@@ -9,7 +9,7 @@ module.exports.updateRead = async (req, res) => {
       `${process.env.APPWRITE_DATABASE_ID}`,
       `${process.env.APPWRITE_NOTIF_COLLECTION_ID}`,
       {
-        isRead: false,
+        isRead: true,
       },
       [Query.equal("receiverId", userId)]
     );

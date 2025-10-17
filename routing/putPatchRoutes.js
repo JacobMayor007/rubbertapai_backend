@@ -13,10 +13,10 @@ const {
   updateNotif,
   updateMarketAlert,
   updateMessageAlert,
-  updateRead,
 } = require("../controller/user/patch");
 const { isAdmin } = require("../controller/user/post");
 const { endisable } = require("../controller/admin/patch");
+const { updateRead } = require("../controller/notifications/patch");
 
 {
   /* Plots */
