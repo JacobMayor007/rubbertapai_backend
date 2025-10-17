@@ -3,7 +3,7 @@ const { database } = require("../../lib/appwrite");
 
 module.exports.getMyNotifications = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.body;
 
     let hasMore = true;
     let lastDocumentId = null;
@@ -23,14 +23,13 @@ module.exports.getMyNotifications = async (req, res) => {
         queries
       );
 
-      allNotifs.push(...response.documents);
-
-      if (allNotifs.length === 0) {
+      if (!response) {
         return res.status(200).json({
-          success: true,
-          items: 0,
+          documents: [],
         });
       }
+
+      allNotifs.push(...response.documents);
 
       if (response.documents.length < limit) {
         hasMore = false;
@@ -45,6 +44,7 @@ module.exports.getMyNotifications = async (req, res) => {
         items: 0,
       });
     }
+
     return res.status(200).json(allNotifs);
   } catch (error) {
     console.error("Error fetching user:", error);
