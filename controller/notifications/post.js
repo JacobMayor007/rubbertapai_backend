@@ -25,6 +25,13 @@ module.exports.getMyNotifications = async (req, res) => {
 
       allNotifs.push(...response.documents);
 
+      if (allNotifs.length === 0) {
+        return res.status(200).json({
+          success: true,
+          items: 0,
+        });
+      }
+
       if (response.documents.length < limit) {
         hasMore = false;
       } else {
@@ -38,7 +45,6 @@ module.exports.getMyNotifications = async (req, res) => {
         items: 0,
       });
     }
-
     return res.status(200).json(allNotifs);
   } catch (error) {
     console.error("Error fetching user:", error);
