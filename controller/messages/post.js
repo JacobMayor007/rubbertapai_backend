@@ -95,6 +95,7 @@ module.exports.sentMessages = async (req, res) => {
           isRead: false,
           userId: `${data.userId}`,
           senderProfile: `${data.senderProfile}`,
+          senderName: `${data.senderName}`,
           receiverId: `${data.receiver_id}`,
         }
       );
