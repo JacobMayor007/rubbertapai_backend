@@ -39,10 +39,7 @@ module.exports.getMyNotifications = async (req, res) => {
     }
 
     if (allNotifs.length === 0) {
-      return res.status(200).json({
-        success: true,
-        items: 0,
-      });
+      return res.status(200).json([]);
     }
 
     return res.status(200).json(allNotifs);
