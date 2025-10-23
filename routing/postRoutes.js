@@ -10,6 +10,7 @@ const {
   isFarmer,
   postNotification,
   isAdmin,
+  analyticsSaveToDB,
 } = require("../controller/user/post");
 const { checkRubberTapApiKey } = require("../middleware/checkRubberTapKey");
 const { saveLeavesToTrees } = require("../controller/leaves/post");
@@ -76,6 +77,8 @@ router.post("/api/v1/users/role", checkRubberTapApiKey, isBuyer);
 
 //Role Checking Farmer
 router.post("/api/v1/users/farmer", checkRubberTapApiKey, isFarmer);
+
+router.post("/api/v1/users/save-prediction", analyticsSaveToDB);
 
 //Admin Login
 router.post("/api/v1/admin", isAdmin, adminLogin);
