@@ -1,5 +1,5 @@
 const { Query } = require("node-appwrite");
-const { database } = require("../../lib/appwrite");
+const { database, ID } = require("../../lib/appwrite");
 const bcrypt = require("bcrypt");
 const saltRounds = 15;
 const { Expo } = require("expo-server-sdk");
@@ -340,5 +340,83 @@ module.exports.postNotification = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send({ success: false, error: error.message });
+  }
+};
+
+module.exports.analyticsSaveToDB = async (req, res) => {
+  try {
+    const {
+      userId,
+      fullName,
+      className,
+      probability,
+      city,
+      region,
+      subregion,
+      country,
+      address,
+    } = req.body;
+
+    if (!userId || !className || probability === undefined) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Convert probability to percentage if needed (e.g., 0.85 → 85.00)
+    const probPercent =
+      probability > 1
+        ? probability
+        : parseFloat((probability * 100).toFixed(2));
+
+    const record = {
+      userId,
+      fullName,
+      className,
+      probability: probPercent,
+      city: city,
+      region: region,
+      subregion: subregion,
+      country: country,
+      address: address,
+    };
+
+    await database.createDocument(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_ANALYTICS_COLLECTION_ID}`,
+      ID.unique(),
+      record
+    );
+
+    res.status(201).json({ success: true });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+
+    // Handle specific Appwrite errors
+    if (error.code === 404) {
+      return res.status(404).json({
+        success: false,
+        error: "User Document not found",
+      });
+    }
+
+    if (error.code === 401) {
+      return res.status(401).json({
+        message: "Unathorized user to query this tree",
+      });
+    }
+
+    if (error.code === 400) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid query parameters",
+        details: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 };
