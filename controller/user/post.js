@@ -17,8 +17,6 @@ module.exports.createUser = async (req, res) => {
       email,
       imageURL,
       role,
-      notifSettings,
-      themeSettings,
       subscription,
     } = req.body;
 
@@ -37,10 +35,13 @@ module.exports.createUser = async (req, res) => {
         email: email,
         imageURL: imageURL,
         role: role,
-        notifSettings: notifSettings,
-        themeSettings: themeSettings,
         subscription: subscription,
         API_KEY: user_api_key,
+        status: "enable",
+        notif: true,
+        weatherAlert: true,
+        marketAlert: true,
+        messageAlert: true,
       }
     );
 
