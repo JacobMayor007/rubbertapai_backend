@@ -39,7 +39,7 @@ module.exports.getMyLeaves = async (req, res) => {
       }
     }
 
-    if (response.documents.length === 0) {
+    if (allLeaves.length === 0) {
       return res.status(200).json([]);
     }
 
