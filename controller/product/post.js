@@ -2,40 +2,43 @@ const { ID, database } = require("../../lib/appwrite");
 
 module.exports.addProduct = async (req, res) => {
   try {
-    const data = {
-      ...req.body,
-    };
-
-    if (
-      !data.address ||
-      !data.userId ||
-      !data.user_username ||
-      !data.user_email ||
-      !data.farmerProfile ||
-      !data.category ||
-      !data.productURL ||
-      !data.category ||
-      !data.description ||
-      !data.price ||
-      !data.city ||
-      !data.region ||
-      !data.country
-    ) {
-      return res.status(400).json({
-        error: "Missing data",
-        message: "You have missing data, please input all the necessary fields",
-      });
-    }
+    const {
+      address,
+      userId,
+      user_username,
+      user_email,
+      farmerProfile,
+      category,
+      productURL,
+      user_fullName,
+      description,
+      price,
+      city,
+      region,
+      country,
+    } = req.body;
 
     const response = await database.createDocument(
       `${process.env.APPWRITE_DATABASE_ID}`,
       `${process.env.APPWRITE_PROD_COLLECTION_ID}`,
       ID.unique(),
       {
-        ...data,
-        price: Number(data.price),
+        address,
+        user_id: userId,
+        user_username,
+        user_email,
+        farmerProfile,
+        category,
+        productURL,
+        user_fullName,
+        description,
+        price,
+        city,
+        region,
+        country,
+        price: Number(price),
       },
-      [`write("user:${data.userId || ""}")`]
+      [`write("user:${userId || ""}")`]
     );
 
     return res.status(200).json({
