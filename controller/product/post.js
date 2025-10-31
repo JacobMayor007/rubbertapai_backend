@@ -8,7 +8,7 @@ module.exports.addProduct = async (req, res) => {
 
     if (
       !data.address ||
-      !data.user_id ||
+      !data.userId ||
       !data.user_username ||
       !data.user_email ||
       !data.farmerProfile ||
@@ -35,7 +35,7 @@ module.exports.addProduct = async (req, res) => {
         ...data,
         price: Number(data.price),
       },
-      [`write("user:${data.user_id || ""}")`]
+      [`write("user:${data.userId || ""}")`]
     );
 
     return res.status(200).json({
