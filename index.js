@@ -12,7 +12,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 let expo = new Expo();
-
+let lastPrice = null;
 const app = express();
 const port = process.env.PORT;
 
@@ -119,7 +119,89 @@ const checkWeatherAndNotify = async (checkUserWeather) => {
   }
 };
 
-// Run every 10 minutes
+module.exports.rubberPrice = async (req, res) => {
+  try {
+    const response = await fetch(
+      `${process.env.COMMODITY_PRICE_ENDPOINT}/commodity_prices?key=${process.env.COMMODITY_PRICE_API_KEY}&name=rubber`
+    );
+
+    const data = await response.json();
+    const currentPrice = parseFloat(data.result.output[0].price);
+
+    if (lastPrice !== null && currentPrice !== lastPrice) {
+      const priceChange = currentPrice > lastPrice ? "up" : "down";
+      console.log(
+        `📊 Price changed (${priceChange}): ${lastPrice} -> ${currentPrice}`
+      );
+      await notifyAllUsers(currentPrice, priceChange);
+    } else if (lastPrice === null) {
+      console.log(`ℹ️ Initial price set: ₱${currentPrice}`);
+    } else {
+      console.log(`➡️ No price change (still ₱${currentPrice})`);
+    }
+
+    lastPrice = currentPrice;
+
+    if (res) {
+      return res.status(200).json({
+        success: true,
+        currentPrice,
+      });
+    }
+  } catch (error) {
+    console.error("❌ Error fetching rubber price:", error);
+    if (res) {
+      return res.status(500).json({
+        success: false,
+        error: "Internal server error",
+      });
+    }
+  }
+};
+
+async function notifyAllUsers(currentPrice, priceChange) {
+  try {
+    const users = await database.listDocuments(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_USER_COLLECTION_ID}`
+    );
+    const messages = [];
+
+    users.documents.forEach((user) => {
+      const token = user.pushToken;
+      if (token && Expo.isExpoPushToken(token)) {
+        messages.push({
+          to: token,
+          sound: "default",
+          title: "Rubber Price Update",
+          body:
+            priceChange === "up"
+              ? `Good news! The rubber price has increased to ₱${currentPrice}.`
+              : `Notice: The rubber price has dropped to ₱${currentPrice}.`,
+        });
+      }
+    });
+
+    const chunks = expo.chunkPushNotifications(messages);
+    for (const chunk of chunks) {
+      await expo.sendPushNotificationsAsync(chunk);
+    }
+
+    console.log(` Notifications sent to ${messages.length} users.`);
+  } catch (err) {
+    console.error(" Error sending notifications:", err);
+  }
+}
+
+// ⏰ Run every 24 hours
+setInterval(async () => {
+  await module.exports.rubberPrice();
+}, 24 * 60 * 60 * 1000);
+
+(async () => {
+  await module.exports.rubberPrice();
+})();
+
 setInterval(() => {
   getUsersLocation();
 }, 10 * 60 * 1000);
