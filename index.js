@@ -119,7 +119,7 @@ const checkWeatherAndNotify = async (checkUserWeather) => {
   }
 };
 
-module.exports.rubberPrice = async (req, res) => {
+const rubberPrice = async (req, res) => {
   try {
     const response = await fetch(
       `${process.env.COMMODITY_PRICE_ENDPOINT}/commodity_prices?key=${process.env.COMMODITY_PRICE_API_KEY}&name=rubber`
@@ -193,13 +193,11 @@ async function notifyAllUsers(currentPrice, priceChange) {
   }
 }
 
-// ⏰ Run every 24 hours
 setInterval(async () => {
-  await module.exports.rubberPrice();
+  await rubberPrice();
 }, 24 * 60 * 60 * 1000);
-
 (async () => {
-  await module.exports.rubberPrice();
+  await rubberPrice();
 })();
 
 setInterval(() => {
