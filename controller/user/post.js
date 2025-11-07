@@ -39,7 +39,7 @@ module.exports.createUser = async (req, res) => {
         API_KEY: user_api_key,
         status: "enable",
         notif: true,
-        weatherAlert: true,
+        weatherAlert: role === "farmer" ? true : null,
         marketAlert: true,
         messageAlert: true,
       }
