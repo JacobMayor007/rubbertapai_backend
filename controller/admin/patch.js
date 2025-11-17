@@ -18,13 +18,44 @@ module.exports.endisable = async (req, res) => {
       }
     );
 
-    const notifyUser = await database.listDocuments(
-      `${process.env.APPWRITE_DATABASE_ID}`,
-      `${process.env.APPWRITE_USER_COLLECTION_ID}`,
-      [Query.equal("$id", reportedId)]
+    if (!result) {
+      return res.status(400).json({
+        success: false,
+        title: `${stats} user error`,
+        message: "There is an error occured, please try again!",
+      });
+    }
+    const docs = await database.listDocuments(
+      process.env.APPWRITE_DATABASE_ID,
+      process.env.APPWRITE_REPO_COLLECTION_ID,
+      [Query.equal("reported_id", [reportedId])] // ✅ wrap in array
     );
 
-    const token = notifyUser.documents[0].pushToken;
+    if (!docs || docs.total === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No reports found for this reported_id",
+      });
+    }
+
+    for (let i = 0; i < docs.documents.length; i++) {
+      await database.updateDocument(
+        process.env.APPWRITE_DATABASE_ID,
+        process.env.APPWRITE_REPO_COLLECTION_ID,
+        docs.documents[i].$id,
+        {
+          status: stats,
+        }
+      );
+    }
+
+    const notifyUser = await database.getDocument(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_USER_COLLECTION_ID}`,
+      reportedId
+    );
+
+    const token = notifyUser.pushToken;
 
     if (!Expo.isExpoPushToken(token)) {
       console.error("Invalid Expo push token:", token);
@@ -48,14 +79,6 @@ module.exports.endisable = async (req, res) => {
       console.log("Notification sent:", ticketChunk);
     } catch (error) {
       console.error("Error sending notification:", error);
-    }
-
-    if (!result) {
-      return res.status(400).json({
-        success: false,
-        title: `${stats} user error`,
-        message: "There is an error occured, please try again!",
-      });
     }
 
     return res.status(200).json({

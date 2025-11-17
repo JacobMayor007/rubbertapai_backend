@@ -47,7 +47,7 @@ module.exports.postReport = async (req, res) => {
       process.env.APPWRITE_REPO_COLLECTION_ID,
       ID.unique(),
       {
-        status: "pending",
+        status: "enable",
         reported_id,
         reportedBy: userId,
         type,
