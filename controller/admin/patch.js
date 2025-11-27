@@ -27,8 +27,8 @@ module.exports.endisable = async (req, res) => {
     }
 
     const docs = await database.listDocuments(
-      process.env.APPWRITE_DATABASE_ID,
-      process.env.APPWRITE_REPO_COLLECTION_ID,
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_REPO_COLLECTION_ID}`,
       [Query.equal("reported_id", [reportedId])]
     );
 
@@ -39,16 +39,16 @@ module.exports.endisable = async (req, res) => {
       });
     }
 
-    const updatePromises = docs.documents.map((doc) =>
-      database.updateDocument(
+    for (let i = 0; i < docs.documents.length; i++) {
+      await database.updateDocument(
         process.env.APPWRITE_DATABASE_ID,
         process.env.APPWRITE_REPO_COLLECTION_ID,
-        doc.$id,
-        { reported_id_image: file }
-      )
-    );
-
-    await Promise.all(updatePromises);
+        docs.documents[i].$id,
+        {
+          status: stats,
+        }
+      );
+    }
 
     const notifyUser = await database.getDocument(
       `${process.env.APPWRITE_DATABASE_ID}`,
