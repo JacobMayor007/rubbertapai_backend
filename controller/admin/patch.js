@@ -25,10 +25,11 @@ module.exports.endisable = async (req, res) => {
         message: "There is an error occured, please try again!",
       });
     }
+
     const docs = await database.listDocuments(
       process.env.APPWRITE_DATABASE_ID,
       process.env.APPWRITE_REPO_COLLECTION_ID,
-      [Query.equal("reported_id", [reportedId])] // ✅ wrap in array
+      [Query.equal("reported_id", [reportedId])]
     );
 
     if (!docs || docs.total === 0) {
@@ -38,16 +39,16 @@ module.exports.endisable = async (req, res) => {
       });
     }
 
-    for (let i = 0; i < docs.documents.length; i++) {
-      await database.updateDocument(
+    const updatePromises = docs.documents.map((doc) =>
+      database.updateDocument(
         process.env.APPWRITE_DATABASE_ID,
         process.env.APPWRITE_REPO_COLLECTION_ID,
-        docs.documents[i].$id,
-        {
-          status: stats,
-        }
-      );
-    }
+        doc.$id,
+        { reported_id_image: file }
+      )
+    );
+
+    await Promise.all(updatePromises);
 
     const notifyUser = await database.getDocument(
       `${process.env.APPWRITE_DATABASE_ID}`,

@@ -501,6 +501,42 @@ module.exports.updateProfile = async (req, res) => {
       });
     }
 
+    const docs = await database.listDocuments(
+      process.env.APPWRITE_DATABASE_ID,
+      process.env.APPWRITE_REPO_COLLECTION_ID,
+      [Query.equal("reported_id", [userId])]
+    );
+
+    if (docs.documents.length > 0) {
+      const updateRepoPromises = docs.documents.map((doc) =>
+        database.updateDocument(
+          process.env.APPWRITE_DATABASE_ID,
+          process.env.APPWRITE_REPO_COLLECTION_ID,
+          doc.$id,
+          { reported_id_image: file }
+        )
+      );
+
+      await Promise.all(updateRepoPromises);
+    }
+
+    const prodDocs = await database.listDocuments(
+      process.env.APPWRITE_DATABASE_ID,
+      process.env.APPWRITE_PROD_COLLECTION_ID,
+      [Query.equal("user_id", [userId])]
+    );
+
+    const updateProdPromise = prodDocs.documents.map((doc) =>
+      database.updateDocument(
+        process.env.APPWRITE_DATABASE_ID,
+        process.env.APPWRITE_PROD_COLLECTION_ID,
+        doc.$id,
+        { farmerProfile: file }
+      )
+    );
+
+    await Promise.all(updateProdPromise);
+
     return res.status(200).json({
       success: true,
       title: "Profile Picture Updated",
@@ -532,4 +568,3 @@ module.exports.updateProfile = async (req, res) => {
     });
   }
 };
-
