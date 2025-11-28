@@ -119,7 +119,7 @@ module.exports.searchUser = async (req, res) => {
   }
 };
 
-module.exports.getRateRubberTapAI = async (req, res) => {
+module.exports.getMyRateRubberTapAI = async (req, res) => {
   try {
     const { userId } = req.params;
 

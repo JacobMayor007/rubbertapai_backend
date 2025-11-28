@@ -24,6 +24,7 @@ const {
   getUserReportUsingId,
   analytics,
   warnUser,
+  getFeedbackFromUsers,
 } = require("../controller/admin/post");
 const { RateFeedbackUser } = require("../controller/rateAndFeedback/post");
 const { getAllPayments, subscription } = require("../controller/payment/post");
@@ -137,5 +138,12 @@ router.post(
 router.post("/api/v1/admin/analytics", checkUserApiKey, isAdmin, analytics);
 
 router.post("/api/v1/admin/warn", checkUserApiKey, isAdmin, warnUser);
+
+router.post(
+  "/api/v1/admin/allFeedbacks",
+  checkUserApiKey,
+  isAdmin,
+  getFeedbackFromUsers
+);
 
 module.exports = router;

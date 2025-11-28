@@ -277,6 +277,69 @@ module.exports.analytics = async (req, res) => {
   }
 };
 
+module.exports.getFeedbackFromUsers = async (req, res) => {
+  try {
+    console.log(req.body);
+
+    const allFeedbacksFromUsers = [];
+    let lastDocumentId = null;
+    let hasMore = true;
+    const limit = 25;
+
+    while (hasMore) {
+      const queries = [Query.limit(limit)];
+
+      if (lastDocumentId) {
+        queries.push(Query.cursorAfter(lastDocumentId));
+      }
+
+      const response = await database.listDocuments(
+        process.env.APPWRITE_DATABASE_ID,
+        process.env.APPWRITE_RATE_RUBBERTAPAI_COLLECTION_ID,
+        queries
+      );
+
+      allFeedbacksFromUsers.push(...response.documents);
+
+      if (response.documents.length < limit) {
+        hasMore = false;
+      } else {
+        lastDocumentId = response.documents[response.documents.length - 1].$id;
+      }
+    }
+
+    const feedbacksFromUsers = allFeedbacksFromUsers.map((doc) => ({
+      ...doc,
+    }));
+
+    res.status(200).json(feedbacksFromUsers);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+
+    if (error.code === 404) {
+      return res.status(404).json({
+        status: "Make sure to logged in first",
+        message: "",
+      });
+    }
+
+    if (error.code === 400) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid query parameters",
+        details: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports.warnUser = async (req, res) => {
   try {
     const { warnedId } = req.body;

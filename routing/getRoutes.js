@@ -3,7 +3,7 @@ const {
   getUserById,
   searchUser,
   getChatMate,
-  getRateRubberTapAI,
+  getMyRateRubberTapAI,
 } = require("../controller/user/get");
 const { getUserProduct, getProducts } = require("../controller/product/get");
 const { getChatRoom } = require("../controller/chat/get");
@@ -54,7 +54,7 @@ router.get("/api/v1/users/payment/:id", getPaymentById);
 
 router.get("/api/v1/users/sent-messages/:userId/:receiverId", getSentMessages);
 
-router.get("/api/v1/users/rubbertapai/:userId", getRateRubberTapAI);
+router.get("/api/v1/users/rubbertapai/:userId", getMyRateRubberTapAI);
 
 router.get(
   "/api/v1/users/received-messages/:userId/:receiverId",
