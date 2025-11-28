@@ -118,3 +118,21 @@ module.exports.searchUser = async (req, res) => {
     res.status(500).json({ error: error.message || "Internal Server Error" });
   }
 };
+
+module.exports.getRateRubberTapAI = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const response = await database.listDocuments(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_RATE_RUBBERTAPAI_COLLECTION_ID}`,
+      [Query.equal("userId", userId)]
+    );
+
+    const data = response.documents[0];
+
+    return res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+  }
+};

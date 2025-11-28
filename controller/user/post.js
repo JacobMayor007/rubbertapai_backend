@@ -421,3 +421,53 @@ module.exports.analyticsSaveToDB = async (req, res) => {
     });
   }
 };
+
+module.exports.rateRubberTapAI = async (req, res) => {
+  try {
+    const { rating, userId, feedback } = req.body;
+
+    await database.createDocument(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_RATE_RUBBERTAPAI_COLLECTION_ID}`,
+      ID.unique(),
+      {
+        rating,
+        userId,
+        feedback,
+      }
+    );
+
+    res.status(201).json({ success: true });
+  } catch (error) {
+    console.error("Error rate user:", error);
+
+    // Handle specific Appwrite errors
+    if (error.code === 404) {
+      return res.status(404).json({
+        success: false,
+        error: "User Document not found",
+      });
+    }
+
+    if (error.code === 401) {
+      return res.status(401).json({
+        message: "Unathorized user to query this tree",
+      });
+    }
+
+    if (error.code === 400) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid query parameters",
+        details: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};

@@ -11,6 +11,7 @@ const {
   postNotification,
   isAdmin,
   analyticsSaveToDB,
+  rateRubberTapAI,
 } = require("../controller/user/post");
 const { checkRubberTapApiKey } = require("../middleware/checkRubberTapKey");
 const { saveLeavesToTrees } = require("../controller/leaves/post");
@@ -101,6 +102,8 @@ router.post(
 
 //Rate User
 router.post("/api/v1/users/rate", checkUserApiKey, RateFeedbackUser);
+
+router.post("/api/v1/users/rubbertapai", checkUserApiKey, rateRubberTapAI);
 
 router.post("/api/v1/users/notifications", checkUserApiKey, getMyNotifications);
 
