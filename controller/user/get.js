@@ -1,5 +1,6 @@
 const { Query } = require("node-appwrite");
 const { database } = require("../../lib/appwrite");
+const e = require("express");
 require("dotenv").config();
 
 module.exports.getUserById = async (req, res) => {
@@ -128,6 +129,10 @@ module.exports.getMyRateRubberTapAI = async (req, res) => {
       `${process.env.APPWRITE_RATE_RUBBERTAPAI_COLLECTION_ID}`,
       [Query.equal("userId", userId)]
     );
+
+    if (response.documents.length < 1) {
+      return res.status(200).json({});
+    }
 
     const data = response.documents[0];
 
