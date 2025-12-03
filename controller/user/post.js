@@ -188,14 +188,14 @@ module.exports.isFarmer = async (req, res) => {
 
     console.log(req.body);
 
-    const isBuyer = await database.listDocuments(
+    const isFarmer = await database.listDocuments(
       `${process.env.APPWRITE_DATABASE_ID}`,
       `${process.env.APPWRITE_USER_COLLECTION_ID}`,
       [Query.equal("email", email)]
     );
 
-    const role = isBuyer.documents[0].role;
-    const status = isBuyer.documents[0].status;
+    const role = isFarmer.documents[0].role;
+    const status = isFarmer.documents[0].status;
 
     console.log(status);
 
@@ -223,6 +223,7 @@ module.exports.isFarmer = async (req, res) => {
       success: true,
       role: "farmer",
     });
+    
   } catch (error) {
     console.error("Error fetching user:", error);
 

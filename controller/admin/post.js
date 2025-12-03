@@ -1,5 +1,5 @@
 const { Query } = require("node-appwrite");
-const { account, database } = require("../../lib/appwrite");
+const { account, database, ID } = require("../../lib/appwrite");
 const { default: Expo } = require("expo-server-sdk");
 
 let expo = new Expo();
@@ -354,6 +354,8 @@ module.exports.warnUser = async (req, res) => {
 
     const token = notifyUser.pushToken;
 
+    console.log(token);
+
     let messages = [
       {
         to: token,
@@ -374,6 +376,18 @@ module.exports.warnUser = async (req, res) => {
     } catch (error) {
       console.error("Error sending notification:", error);
     }
+
+    await database.createDocument(
+      `${process.env.APPWRITE_DATABASE_ID}`,
+      `${process.env.APPWRITE_NOTIF_COLLECTION_ID}`,
+      ID.unique(),
+      {
+        type: "Message Notifications",
+        message: `You have been warned, too many users have reported you.`,
+        isRead: false,
+        receiverId: `${warnedId}`,
+      }
+    );
 
     return res.status(200).json({
       success: true,
