@@ -29,12 +29,14 @@ module.exports.getMyNotifications = async (req, res) => {
         });
       }
 
+      console.log(response.documents[0].$id);
+
       allNotifs.push(...response.documents);
 
       if (response.documents.length < limit) {
         hasMore = false;
       } else {
-        lastDocumentId = response.documents[response.documents - 1].$id;
+        lastDocumentId = response.documents[response.documents.length - 1].$id;
       }
     }
 
